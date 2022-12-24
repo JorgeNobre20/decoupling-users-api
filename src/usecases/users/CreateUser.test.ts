@@ -8,12 +8,16 @@ import {
   InvalidDataException,
 } from "../../domain/exceptions";
 import { GetUserUseCase } from "./GetUser";
+import { UserService } from "../../infra/services";
 
 describe("Create User Use Case", () => {
   it("should create user correctly when pass valid data", async () => {
     const dataValidator = new YupUserValidator();
     const userMapper = new UserMapper();
     const userRepository = new UserInMemoryRepository();
+    const userService = new UserService({
+      userRepository,
+    });
     const uuidGenerator = new UUIDInMemoryGenerator();
 
     const createUserUseCaseProps: CreateUserUseCaseProps = {
@@ -21,6 +25,7 @@ describe("Create User Use Case", () => {
       userMapper,
       userRepository,
       uuidGenerator,
+      userService,
     };
     const createUserUseCase = new CreateUserUseCase(createUserUseCaseProps);
     const getUserUseCase = new GetUserUseCase({
@@ -47,6 +52,9 @@ describe("Create User Use Case", () => {
     const dataValidator = new YupUserValidator();
     const userMapper = new UserMapper();
     const userRepository = new UserInMemoryRepository();
+    const userService = new UserService({
+      userRepository,
+    });
     const uuidGenerator = new UUIDInMemoryGenerator();
 
     const createUserUseCaseProps: CreateUserUseCaseProps = {
@@ -54,6 +62,7 @@ describe("Create User Use Case", () => {
       userMapper,
       userRepository,
       uuidGenerator,
+      userService,
     };
     const createUserUseCase = new CreateUserUseCase(createUserUseCaseProps);
 
@@ -76,6 +85,9 @@ describe("Create User Use Case", () => {
     const dataValidator = new YupUserValidator();
     const userMapper = new UserMapper();
     const userRepository = new UserInMemoryRepository();
+    const userService = new UserService({
+      userRepository,
+    });
     const uuidGenerator = new UUIDInMemoryGenerator();
 
     const createUserUseCaseProps: CreateUserUseCaseProps = {
@@ -83,6 +95,7 @@ describe("Create User Use Case", () => {
       userMapper,
       userRepository,
       uuidGenerator,
+      userService,
     };
     const createUserUseCase = new CreateUserUseCase(createUserUseCaseProps);
 

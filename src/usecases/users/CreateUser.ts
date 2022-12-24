@@ -3,10 +3,12 @@ import { IDataValidator } from "../../adpaters/IDataValidator";
 import { IUserRepository } from "../../data/repositories";
 import { BusinessRuleException } from "../../domain/exceptions";
 import { UserDataValidation } from "../../infra/adapters/YupUserValidator";
+import { IUserService } from "../../services";
 import { UseCase } from "../IUseCase";
 
 export type CreateUserUseCaseProps = {
   userRepository: IUserRepository;
+  userService: IUserService;
   uuidGenerator: IUUIDGenerator;
   dataValidator: IDataValidator<UserDataValidation>;
   userMapper: IUserMapper;
@@ -21,12 +23,14 @@ type Input = {
 
 export class CreateUserUseCase implements UseCase<Input, string> {
   private userRepository: IUserRepository;
+  private userService: IUserService;
   private uuidGenerator: IUUIDGenerator;
   private dataValidator: IDataValidator<UserDataValidation>;
   private userMapper: IUserMapper;
 
   constructor(props: CreateUserUseCaseProps) {
     this.userRepository = props.userRepository;
+    this.userService = props.userService;
     this.uuidGenerator = props.uuidGenerator;
     this.dataValidator = props.dataValidator;
     this.userMapper = props.userMapper;
@@ -44,24 +48,14 @@ export class CreateUserUseCase implements UseCase<Input, string> {
     });
 
     const user = this.userMapper.mapRepositoryToEntity({ id, ...data });
-    await this.findUserByEmailOrThrowException(data.email);
+    await this.userService.verifyIfEmailIsAvailableOrThrowBusinessRuleException(
+      user.getEmail()
+    );
 
     await this.userRepository.create(
       this.userMapper.mapEntityToRepository(user)
     );
 
     return id;
-  }
-
-  private async findUserByEmailOrThrowException(email: string) {
-    const userWithSameEmail = await this.userRepository.findByEmail(email);
-
-    if (userWithSameEmail) {
-      throw new BusinessRuleException(
-        `Already exists an user with email: ${email}`
-      );
-    }
-
-    return userWithSameEmail;
   }
 }

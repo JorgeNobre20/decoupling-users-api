@@ -5,12 +5,14 @@ import { CreateUserUseCase, CreateUserUseCaseProps } from "./CreateUser";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import { NotFoundException } from "../../domain/exceptions";
 import { GetUserUseCase, GetUserUseCaseProps } from "./GetUser";
+import { UserService } from "../../infra/services";
 
 describe("Get User Use Case", () => {
   it("should find an user correctly when pass existing user id", async () => {
     const dataValidator = new YupUserValidator();
     const userMapper = new UserMapper();
     const userRepository = new UserInMemoryRepository();
+    const userService = new UserService({ userRepository });
     const uuidGenerator = new UUIDInMemoryGenerator();
 
     const createUserUseCaseProps: CreateUserUseCaseProps = {
@@ -18,6 +20,7 @@ describe("Get User Use Case", () => {
       userMapper,
       userRepository,
       uuidGenerator,
+      userService,
     };
     const createUserUseCase = new CreateUserUseCase(createUserUseCaseProps);
     const getUserUseCase = new GetUserUseCase({
