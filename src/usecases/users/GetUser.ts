@@ -1,24 +1,20 @@
 import { IUserRepository } from "../../data/repositories";
 import { UserEntity, UserEntityProps } from "../../domain/entities";
 import { NotFoundException } from "../../domain/exceptions/NotFound";
-import { UseCase } from "../IUseCase";
+import { GetUserUseCaseInput, IGetUserUseCase } from "./IGetUser";
 
 export type GetUserUseCaseProps = {
   userRepository: IUserRepository;
 };
 
-type Input = {
-  id: string;
-};
-
-export class GetUserUseCase implements UseCase<Input, UserEntity> {
+export class GetUserUseCase implements IGetUserUseCase {
   private userRepository: IUserRepository;
 
   constructor(props: GetUserUseCaseProps) {
     this.userRepository = props.userRepository;
   }
 
-  async exec(data: Input) {
+  async exec(data: GetUserUseCaseInput) {
     const userId = data.id;
     const userExists = await this.userRepository.findById(userId);
 
