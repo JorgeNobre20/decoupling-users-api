@@ -3,7 +3,7 @@ import { UserEntity, UserEntityProps } from "../../domain/entities";
 import { NotFoundException } from "../../domain/exceptions/NotFound";
 import { UseCase } from "../IUseCase";
 
-type GetUserUseCaseProps = {
+export type GetUserUseCaseProps = {
   userRepository: IUserRepository;
 };
 
