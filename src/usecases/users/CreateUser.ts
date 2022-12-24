@@ -1,10 +1,9 @@
 import { IUserMapper, IUUIDGenerator } from "../../adpaters";
 import { IDataValidator } from "../../adpaters/IDataValidator";
 import { IUserRepository } from "../../data/repositories";
-import { BusinessRuleException } from "../../domain/exceptions";
 import { UserDataValidation } from "../../infra/adapters/YupUserValidator";
 import { IUserService } from "../../services";
-import { UseCase } from "../IUseCase";
+import { CreateUserUseCaseInput, ICreateUserUseCase } from "./ICreateUser";
 
 export type CreateUserUseCaseProps = {
   userRepository: IUserRepository;
@@ -14,14 +13,7 @@ export type CreateUserUseCaseProps = {
   userMapper: IUserMapper;
 };
 
-type Input = {
-  name: string;
-  email: string;
-  password: string;
-  avatar: string;
-};
-
-export class CreateUserUseCase implements UseCase<Input, string> {
+export class CreateUserUseCase implements ICreateUserUseCase {
   private userRepository: IUserRepository;
   private userService: IUserService;
   private uuidGenerator: IUUIDGenerator;
@@ -36,7 +28,7 @@ export class CreateUserUseCase implements UseCase<Input, string> {
     this.userMapper = props.userMapper;
   }
 
-  async exec(data: Input) {
+  async exec(data: CreateUserUseCaseInput) {
     const id = await this.uuidGenerator.generate();
 
     await this.dataValidator.validate({
