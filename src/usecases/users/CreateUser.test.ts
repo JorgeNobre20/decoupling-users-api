@@ -1,5 +1,4 @@
-import { UserMapper, UUIDInMemoryGenerator } from "../../adpaters";
-import { YupUserValidator } from "../../infra/adapters";
+import { UserMapper, YupUserValidator } from "../../infra/adapters";
 import { UserInMemoryRepository } from "../../infra/repositories";
 import { CreateUserUseCase, CreateUserUseCaseProps } from "./CreateUser";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
@@ -8,7 +7,10 @@ import {
   InvalidDataException,
 } from "../../domain/exceptions";
 import { GetUserUseCase } from "./GetUser";
-import { UserService } from "../../infra/services";
+import {
+  UserService,
+  UUIDInMemoryGeneratorService,
+} from "../../infra/services";
 
 describe("Create User Use Case", () => {
   it("should create user correctly when pass valid data", async () => {
@@ -18,7 +20,7 @@ describe("Create User Use Case", () => {
     const userService = new UserService({
       userRepository,
     });
-    const uuidGenerator = new UUIDInMemoryGenerator();
+    const uuidGenerator = new UUIDInMemoryGeneratorService();
 
     const createUserUseCaseProps: CreateUserUseCaseProps = {
       dataValidator,
@@ -55,7 +57,7 @@ describe("Create User Use Case", () => {
     const userService = new UserService({
       userRepository,
     });
-    const uuidGenerator = new UUIDInMemoryGenerator();
+    const uuidGenerator = new UUIDInMemoryGeneratorService();
 
     const createUserUseCaseProps: CreateUserUseCaseProps = {
       dataValidator,
@@ -88,7 +90,7 @@ describe("Create User Use Case", () => {
     const userService = new UserService({
       userRepository,
     });
-    const uuidGenerator = new UUIDInMemoryGenerator();
+    const uuidGenerator = new UUIDInMemoryGeneratorService();
 
     const createUserUseCaseProps: CreateUserUseCaseProps = {
       dataValidator,

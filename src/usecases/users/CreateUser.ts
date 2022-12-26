@@ -1,14 +1,14 @@
-import { IUserMapper, IUUIDGenerator } from "../../adpaters";
+import { IUserMapper } from "../../adpaters";
 import { IDataValidator } from "../../adpaters/IDataValidator";
 import { IUserRepository } from "../../data/repositories";
 import { UserDataValidation } from "../../infra/adapters/YupUserValidator";
-import { IUserService } from "../../services";
+import { IUserService, IUUIDGeneratorService } from "../../services";
 import { CreateUserUseCaseInput, ICreateUserUseCase } from "./ICreateUser";
 
 export type CreateUserUseCaseProps = {
   userRepository: IUserRepository;
   userService: IUserService;
-  uuidGenerator: IUUIDGenerator;
+  uuidGenerator: IUUIDGeneratorService;
   dataValidator: IDataValidator<UserDataValidation>;
   userMapper: IUserMapper;
 };
@@ -16,7 +16,7 @@ export type CreateUserUseCaseProps = {
 export class CreateUserUseCase implements ICreateUserUseCase {
   private userRepository: IUserRepository;
   private userService: IUserService;
-  private uuidGenerator: IUUIDGenerator;
+  private uuidGenerator: IUUIDGeneratorService;
   private dataValidator: IDataValidator<UserDataValidation>;
   private userMapper: IUserMapper;
 

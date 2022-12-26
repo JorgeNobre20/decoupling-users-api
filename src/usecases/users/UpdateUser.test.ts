@@ -1,12 +1,14 @@
-import { UserMapper, UUIDInMemoryGenerator } from "../../adpaters";
 import {
   BusinessRuleException,
   InvalidDataException,
   NotFoundException,
 } from "../../domain/exceptions";
-import { YupUserValidator } from "../../infra/adapters";
+import { UserMapper, YupUserValidator } from "../../infra/adapters";
 import { UserInMemoryRepository } from "../../infra/repositories";
-import { UserService } from "../../infra/services";
+import {
+  UserService,
+  UUIDInMemoryGeneratorService,
+} from "../../infra/services";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import { CreateUserUseCase, CreateUserUseCaseProps } from "./CreateUser";
 import { GetUserUseCase, GetUserUseCaseProps } from "./GetUser";
@@ -32,7 +34,7 @@ let userRepository = new UserInMemoryRepository();
 let userService = new UserService({
   userRepository,
 });
-const uuidGenerator = new UUIDInMemoryGenerator();
+const uuidGenerator = new UUIDInMemoryGeneratorService();
 const dataValidator = new YupUserValidator();
 const userMapper = new UserMapper();
 

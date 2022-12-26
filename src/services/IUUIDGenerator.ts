@@ -1,3 +1,3 @@
-export abstract class IUUIDGenerator {
+export abstract class IUUIDGeneratorService {
   abstract generate(): Promise<string>;
 }

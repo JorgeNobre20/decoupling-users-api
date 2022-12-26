@@ -1,11 +1,13 @@
-import { UserMapper, UUIDInMemoryGenerator } from "../../adpaters";
-import { YupUserValidator } from "../../infra/adapters";
+import { UserMapper, YupUserValidator } from "../../infra/adapters";
 import { UserInMemoryRepository } from "../../infra/repositories";
 import { CreateUserUseCase, CreateUserUseCaseProps } from "./CreateUser";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import { NotFoundException } from "../../domain/exceptions";
 import { GetUserUseCase, GetUserUseCaseProps } from "./GetUser";
-import { UserService } from "../../infra/services";
+import {
+  UserService,
+  UUIDInMemoryGeneratorService,
+} from "../../infra/services";
 
 describe("Get User Use Case", () => {
   it("should find an user correctly when pass existing user id", async () => {
@@ -13,7 +15,7 @@ describe("Get User Use Case", () => {
     const userMapper = new UserMapper();
     const userRepository = new UserInMemoryRepository();
     const userService = new UserService({ userRepository });
-    const uuidGenerator = new UUIDInMemoryGenerator();
+    const uuidGenerator = new UUIDInMemoryGeneratorService();
 
     const createUserUseCaseProps: CreateUserUseCaseProps = {
       dataValidator,
