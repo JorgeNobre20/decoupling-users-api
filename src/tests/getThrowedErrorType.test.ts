@@ -2,7 +2,7 @@ import { getThrowedErrorType, NoErrorThrownError } from "./getThrowedErrorType";
 
 describe("Get Throwed Error Type Helper Function", () => {
   it("should return NoErrorThrownError when everything runs correctly", async () => {
-    const error = await getThrowedErrorType(() => console.log("OK"));
+    const error = await getThrowedErrorType(() => {});
     expect(error).toBeInstanceOf(NoErrorThrownError);
   });
 
