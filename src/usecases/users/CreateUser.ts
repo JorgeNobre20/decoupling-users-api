@@ -3,7 +3,10 @@ import { IDataValidator } from "../../adpaters/IDataValidator";
 import { IUserRepository } from "../../data/repositories";
 import { UserDataValidation } from "../../infra/adapters/YupUserValidator";
 import { IUserService, IUUIDGeneratorService } from "../../services";
-import { CreateUserUseCaseInput, ICreateUserUseCase } from "./ICreateUser";
+import {
+  CreateUserUseCaseInput,
+  ICreateUserUseCase,
+} from "./contracts/ICreateUser";
 
 export type CreateUserUseCaseProps = {
   userRepository: IUserRepository;

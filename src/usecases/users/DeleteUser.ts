@@ -1,6 +1,9 @@
 import { IUserRepository } from "../../data/repositories";
-import { IGetUserUseCase } from "./IGetUser";
-import { IDeleteUserUseCase, DeleteUserUseCaseInput } from "./IDeleteUser";
+import {
+  IGetUserUseCase,
+  IDeleteUserUseCase,
+  DeleteUserUseCaseInput,
+} from "./contracts";
 
 export type DeleteUserUseCaseProps = {
   userRepository: IUserRepository;

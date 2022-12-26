@@ -2,8 +2,11 @@ import { IDataValidator, IUserMapper } from "../../adpaters";
 import { IUserRepository, UserRepositoryData } from "../../data/repositories";
 import { UserDataValidation } from "../../infra/adapters";
 import { IUserService } from "../../services";
-import { IGetUserUseCase } from "./IGetUser";
-import { IUpdateUserUseCase, UpdateUserUseCaseInput } from "./IUpdateUser";
+import {
+  IGetUserUseCase,
+  IUpdateUserUseCase,
+  UpdateUserUseCaseInput,
+} from "./contracts";
 
 export type UpdateUserUseCaseProps = {
   userRepository: IUserRepository;

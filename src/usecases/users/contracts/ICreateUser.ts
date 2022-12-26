@@ -1,4 +1,4 @@
-import { UseCase } from "../IUseCase";
+import { UseCase } from "../../IUseCase";
 
 export type CreateUserUseCaseInput = {
   name: string;

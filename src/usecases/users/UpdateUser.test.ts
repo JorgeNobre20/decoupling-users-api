@@ -8,8 +8,8 @@ import { UserMapper, YupUserValidator } from "../../infra/adapters";
 import { UserInMemoryRepository } from "../../infra/repositories";
 import { UserService } from "../../infra/services";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
+import { UpdateUserUseCaseInput } from "./contracts";
 import { GetUserUseCase, GetUserUseCaseProps } from "./GetUser";
-import { UpdateUserUseCaseInput } from "./IUpdateUser";
 import { UpdateUserUseCase, UpdateUserUseCaseProps } from "./UpdateUser";
 
 const firstUserCreationData: UserRepositoryData = {

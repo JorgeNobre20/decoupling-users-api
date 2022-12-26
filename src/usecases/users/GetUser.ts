@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../data/repositories";
 import { UserEntity, UserEntityProps } from "../../domain/entities";
 import { NotFoundException } from "../../domain/exceptions/NotFound";
-import { GetUserUseCaseInput, IGetUserUseCase } from "./IGetUser";
+import { IGetUserUseCase, GetUserUseCaseInput } from "./contracts";
 
 export type GetUserUseCaseProps = {
   userRepository: IUserRepository;
