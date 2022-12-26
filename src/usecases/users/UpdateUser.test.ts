@@ -1,3 +1,4 @@
+import { UserRepositoryData } from "../../data/repositories";
 import {
   BusinessRuleException,
   InvalidDataException,
@@ -5,53 +6,39 @@ import {
 } from "../../domain/exceptions";
 import { UserMapper, YupUserValidator } from "../../infra/adapters";
 import { UserInMemoryRepository } from "../../infra/repositories";
-import {
-  UserService,
-  UUIDInMemoryGeneratorService,
-} from "../../infra/services";
+import { UserService } from "../../infra/services";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
-import { CreateUserUseCase, CreateUserUseCaseProps } from "./CreateUser";
 import { GetUserUseCase, GetUserUseCaseProps } from "./GetUser";
-import { CreateUserUseCaseInput } from "./ICreateUser";
 import { UpdateUserUseCaseInput } from "./IUpdateUser";
 import { UpdateUserUseCase, UpdateUserUseCaseProps } from "./UpdateUser";
 
-const firstUserCreationData: CreateUserUseCaseInput = {
+const firstUserCreationData: UserRepositoryData = {
+  id: "first_valid_id",
   name: "any_name",
   email: "any_email@email.com",
   password: "any_password",
   avatar: "any_avatar",
 };
 
-const secondUserCreationData: CreateUserUseCaseInput = {
+const secondUserCreationData: UserRepositoryData = {
+  id: "second_valid_id",
   name: "any_name_2",
   email: "any_email_2@email.com",
   password: "any_password_2",
   avatar: "any_avatar_2",
 };
 
-let userRepository = new UserInMemoryRepository();
-let userService = new UserService({
+const userRepository = new UserInMemoryRepository();
+const userService = new UserService({
   userRepository,
 });
-const uuidGenerator = new UUIDInMemoryGeneratorService();
 const dataValidator = new YupUserValidator();
 const userMapper = new UserMapper();
-
-const createUserUseCaseProps: CreateUserUseCaseProps = {
-  userRepository,
-  userService,
-  uuidGenerator,
-  dataValidator,
-  userMapper,
-};
-
-let createUserUseCase = new CreateUserUseCase(createUserUseCaseProps);
 
 const getUserUseCaseProps: GetUserUseCaseProps = {
   userRepository,
 };
-let getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
+const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
 
 const updateUserUseCaseProps: UpdateUserUseCaseProps = {
   userRepository,
@@ -61,36 +48,13 @@ const updateUserUseCaseProps: UpdateUserUseCaseProps = {
   getUserUseCase,
 };
 
-let updateUserUseCase = new UpdateUserUseCase(updateUserUseCaseProps);
+const updateUserUseCase = new UpdateUserUseCase(updateUserUseCaseProps);
 
 describe("Update User Use Case", () => {
-  beforeEach(() => {
-    userRepository = new UserInMemoryRepository();
-    userService = new UserService({
-      userRepository,
-    });
-
-    createUserUseCase = new CreateUserUseCase({
-      ...createUserUseCaseProps,
-      userService,
-      userRepository,
-    });
-
-    getUserUseCase = new GetUserUseCase({ userRepository });
-
-    updateUserUseCase = new UpdateUserUseCase({
-      ...updateUserUseCaseProps,
-      userRepository,
-      userService,
-      getUserUseCase,
-    });
-  });
-
   it("should update a user correctly when pass valid data", async () => {
-    const createdUserId = await createUserUseCase.exec(firstUserCreationData);
-
+    await userRepository.create(firstUserCreationData);
     const updatedUserData: UpdateUserUseCaseInput = {
-      id: createdUserId,
+      id: firstUserCreationData.id,
       name: "updated_name",
       email: "updated@email.com",
       password: "updated_password",
@@ -98,6 +62,8 @@ describe("Update User Use Case", () => {
     };
 
     const updatedUser = await updateUserUseCase.exec(updatedUserData);
+
+    await userRepository.delete(firstUserCreationData.id);
 
     expect(updatedUserData.id).toEqual(updatedUser.getId());
     expect(updatedUserData.name).toEqual(updatedUser.getName());
@@ -124,41 +90,33 @@ describe("Update User Use Case", () => {
   });
 
   it("should throw a business rule exception when try to update user with an already in use email", async () => {
-    const firstUserCreatedId = await createUserUseCase.exec(
-      firstUserCreationData
-    );
-    const firstUserCreated = await getUserUseCase.exec({
-      id: firstUserCreatedId,
-    });
-
-    const secondUserCreatedId = await createUserUseCase.exec(
-      secondUserCreationData
-    );
-    const secondUserCreated = await getUserUseCase.exec({
-      id: secondUserCreatedId,
-    });
+    await userRepository.create(firstUserCreationData);
+    await userRepository.create(secondUserCreationData);
 
     const updatedUserData: UpdateUserUseCaseInput = {
-      id: secondUserCreated.getId(),
-      name: secondUserCreated.getName(),
-      email: firstUserCreated.getEmail(),
-      password: secondUserCreated.getPassword(),
-      avatar: secondUserCreated.getAvatar(),
+      id: secondUserCreationData.id,
+      name: secondUserCreationData.name,
+      email: firstUserCreationData.email,
+      password: secondUserCreationData.password,
+      avatar: secondUserCreationData.avatar,
     };
 
     const error = await getThrowedErrorType(() =>
       updateUserUseCase.exec(updatedUserData)
     );
 
+    await userRepository.delete(firstUserCreationData.id);
+    await userRepository.delete(secondUserCreationData.id);
+
     expect(error).not.toBeInstanceOf(NoErrorThrownError);
     expect(error).toBeInstanceOf(BusinessRuleException);
   });
 
   it("should throw invalid data exception when try to update user with invalid data", async () => {
-    const createdUserId = await createUserUseCase.exec(firstUserCreationData);
+    await userRepository.create(firstUserCreationData);
 
     const updatedUserData: UpdateUserUseCaseInput = {
-      id: createdUserId,
+      id: firstUserCreationData.id,
       name: "",
       email: "invalid_email",
       password: "",
@@ -168,6 +126,8 @@ describe("Update User Use Case", () => {
     const error = await getThrowedErrorType(() =>
       updateUserUseCase.exec(updatedUserData)
     );
+
+    await userRepository.delete(firstUserCreationData.id);
 
     expect(error).not.toBeInstanceOf(NoErrorThrownError);
     expect(error).toBeInstanceOf(InvalidDataException);
