@@ -32,13 +32,9 @@ export class UserService implements IUserService {
   ): Promise<void> {
     const userWithEmail = await this.userRepository.findByEmail(email);
 
-    console.log(userId, email);
-
     if (!userWithEmail) {
       return;
     }
-
-    console.log(userWithEmail);
 
     if (userWithEmail.id !== userId) {
       throw new BusinessRuleException(
