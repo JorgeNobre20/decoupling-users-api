@@ -22,4 +22,9 @@ export class UserInMemoryRepository implements IUserRepository {
     const remaningUsers = this.users.filter((user) => user.id !== input.id);
     this.users = [...remaningUsers, input];
   }
+
+  async delete(id: string) {
+    const remaningUsers = this.users.filter((user) => user.id !== id);
+    this.users = remaningUsers;
+  }
 }
