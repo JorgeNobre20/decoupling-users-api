@@ -1,4 +1,5 @@
 import { IUserRepository } from "../../data/repositories";
+import { UserEntity } from "../../domain/entities";
 import { BusinessRuleException } from "../../domain/exceptions";
 import { IUserService } from "../../services";
 

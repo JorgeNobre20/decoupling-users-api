@@ -1,40 +1,59 @@
-import { IUserRepository } from "../../data/repositories";
-import { UserEntity, UserEntityProps } from "../../domain/entities";
-import { NotFoundException } from "../../domain/exceptions/NotFound";
-import { UseCase } from "../IUseCase";
+import { IDataValidator, IUserMapper } from "../../adpaters";
+import { IUserRepository, UserRepositoryData } from "../../data/repositories";
+import { UserDataValidation } from "../../infra/adapters";
+import { IUserService } from "../../services";
+import { IGetUserUseCase } from "./IGetUser";
+import { IUpdateUserUseCase, UpdateUserUseCaseInput } from "./IUpdateUser";
 
 export type UpdateUserUseCaseProps = {
   userRepository: IUserRepository;
+  getUserUseCase: IGetUserUseCase;
+  dataValidator: IDataValidator<UserDataValidation>;
+  userService: IUserService;
+  userMapper: IUserMapper;
 };
 
-type Input = {
-  id: string;
-};
-
-export class UpdateUserUseCase implements UseCase<Input, UserEntity> {
+export class UpdateUserUseCase implements IUpdateUserUseCase {
   private userRepository: IUserRepository;
+  private getUserUseCase: IGetUserUseCase;
+  private dataValidator: IDataValidator<UserDataValidation>;
+  private userService: IUserService;
+  private userMapper: IUserMapper;
 
   constructor(props: UpdateUserUseCaseProps) {
     this.userRepository = props.userRepository;
+    this.getUserUseCase = props.getUserUseCase;
+    this.dataValidator = props.dataValidator;
+    this.userService = props.userService;
+    this.userMapper = props.userMapper;
   }
 
-  async exec(data: Input) {
+  async exec(data: UpdateUserUseCaseInput) {
     const userId = data.id;
-    const userExists = await this.userRepository.findById(userId);
 
-    if (!userExists) {
-      throw new NotFoundException(`Doesn't exists an user with ID: ${userId}`);
-    }
+    await this.getUserUseCase.exec({ id: userId });
+    await this.dataValidator.validate({
+      id: userId,
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      avatar: data.avatar,
+    });
 
-    const userData: UserEntityProps = {
-      id: userExists.id,
-      name: userExists.name,
-      email: userExists.email,
-      password: userExists.password,
-      avatar: userExists.avatar,
+    await this.userService.verifyIfEmailBelongsToUserOrIsAvailableOrThrowBusinessRuleException(
+      userId,
+      data.email
+    );
+
+    const updatedData: UserRepositoryData = {
+      id: userId,
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      avatar: data.avatar,
     };
-    const user = new UserEntity(userData);
 
-    return user;
+    await this.userRepository.update(updatedData);
+    return this.userMapper.mapRepositoryToEntity(updatedData);
   }
 }
