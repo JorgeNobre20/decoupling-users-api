@@ -6,6 +6,18 @@ import {
 export class UserInMemoryRepository implements IUserRepository {
   private users: UserRepositoryData[] = [];
 
+  private static instance: IUserRepository;
+
+  private constructor() {}
+
+  public static getInstance(): IUserRepository {
+    if (!UserInMemoryRepository.instance) {
+      UserInMemoryRepository.instance = new UserInMemoryRepository();
+    }
+
+    return UserInMemoryRepository.instance;
+  }
+
   async create(input: UserRepositoryData) {
     this.users.push(input);
   }
