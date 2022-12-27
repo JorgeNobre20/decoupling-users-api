@@ -13,7 +13,7 @@ import {
 
 const dataValidator = new YupUserValidator();
 const userMapper = new UserMapper();
-const userRepository = new UserInMemoryRepository();
+const userRepository = UserInMemoryRepository.getInstance();
 const userService = new UserService({
   userRepository,
 });

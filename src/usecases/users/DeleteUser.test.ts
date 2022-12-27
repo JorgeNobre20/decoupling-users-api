@@ -5,7 +5,7 @@ import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import { NotFoundException } from "../../domain/exceptions";
 import { UserRepositoryData } from "../../data/repositories";
 
-const userRepository = new UserInMemoryRepository();
+const userRepository = UserInMemoryRepository.getInstance();
 
 const getUserUseCase = new GetUserUseCase({
   userRepository,

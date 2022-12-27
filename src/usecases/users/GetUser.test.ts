@@ -4,7 +4,7 @@ import { NotFoundException } from "../../domain/exceptions";
 import { GetUserUseCase } from "./GetUser";
 import { UserRepositoryData } from "../../data/repositories";
 
-const userRepository = new UserInMemoryRepository();
+const userRepository = UserInMemoryRepository.getInstance();
 
 const getUserUseCase = new GetUserUseCase({
   userRepository,

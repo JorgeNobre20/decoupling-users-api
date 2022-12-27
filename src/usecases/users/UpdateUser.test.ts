@@ -28,7 +28,7 @@ const secondUserCreationData: UserRepositoryData = {
   avatar: "any_avatar_2",
 };
 
-const userRepository = new UserInMemoryRepository();
+const userRepository = UserInMemoryRepository.getInstance();
 const userService = new UserService({
   userRepository,
 });
