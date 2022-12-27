@@ -1,1 +1,1 @@
-export * from "./UserInMemotyRepository";
+export * from "./UserInMemoryRepository";
