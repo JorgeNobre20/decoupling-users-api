@@ -2,6 +2,7 @@ import {
   CreateUserUseCaseInput,
   ICreateUserUseCase,
 } from "../../../usecases/users/contracts";
+import { HttpStatus } from "../../enums";
 import { HttpRequestModel, HttpResponseModel } from "../../models";
 import { AbstractController } from "../AbstractController";
 import {
@@ -35,7 +36,7 @@ export class CreateUserController extends AbstractController<
     await this.createUserUseCase.exec(createUserUseCaseInput);
 
     const httpResponse: HttpResponseModel<CreateUserControllerOutput> = {
-      statusCode: 200,
+      statusCode: HttpStatus.CREATED,
       body: {
         message: "User created successfully",
       },
