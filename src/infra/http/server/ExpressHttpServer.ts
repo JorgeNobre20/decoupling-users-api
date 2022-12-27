@@ -15,7 +15,7 @@ export class ExpressHttpServer extends HttpServer {
   run(): void {
     this.logServerStarting();
     this.setupExpressServer();
-    this.server.listen(this.port, this.logServerStarted);
+    this.server.listen(this.port, () => this.logServerStarted());
   }
 
   private setupExpressServer() {
@@ -34,14 +34,15 @@ export class ExpressHttpServer extends HttpServer {
     });
   }
 
-  private async adaptExpressRequest<RequestBodyType, ResponseBodyType>(
+  private async adaptExpressRequest(
     request: Request,
     response: Response,
-    controller: AbstractController<RequestBodyType, ResponseBodyType>
+    controller: AbstractController
   ) {
-    const requestBody = request.body as RequestBodyType;
     const httpRequest: HttpRequestModel = {
-      body: requestBody,
+      params: request.params,
+      query: request.params,
+      body: request.body,
     };
 
     const httpResponse = await controller.handle(httpRequest);

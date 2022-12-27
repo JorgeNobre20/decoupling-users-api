@@ -24,7 +24,7 @@ export class RestifyHttpServer extends HttpServer {
     this.logServerStarting();
     this.setupRestifyServer();
 
-    this.server.listen(this.port, this.logServerStarted());
+    this.server.listen(this.port, () => this.logServerStarted());
   }
 
   private setupRestifyServer() {
@@ -108,6 +108,8 @@ export class RestifyHttpServer extends HttpServer {
   ) {
     const requestBody = request.body as RequestBodyType;
     const httpRequest: HttpRequestModel = {
+      params: request.params,
+      query: request.query,
       body: requestBody,
     };
 
