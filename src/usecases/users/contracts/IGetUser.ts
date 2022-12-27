@@ -1,5 +1,5 @@
-import { UserEntity } from "../../domain/entities";
-import { UseCase } from "../IUseCase";
+import { UserEntity } from "../../../domain/entities";
+import { UseCase } from "../../IUseCase";
 
 export type GetUserUseCaseInput = {
   id: string;
