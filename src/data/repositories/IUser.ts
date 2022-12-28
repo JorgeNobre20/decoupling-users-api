@@ -12,4 +12,5 @@ export interface IUserRepository {
   findByEmail: (email: string) => Promise<UserRepositoryData | undefined>;
   update: (input: UserRepositoryData) => Promise<void>;
   delete: (id: string) => Promise<void>;
+  deleteAll: () => Promise<void>;
 }

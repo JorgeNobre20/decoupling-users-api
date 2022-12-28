@@ -5,7 +5,6 @@ import {
 
 export class UserInMemoryRepository implements IUserRepository {
   private users: UserRepositoryData[] = [];
-
   private static instance: IUserRepository;
 
   private constructor() {}
@@ -38,5 +37,9 @@ export class UserInMemoryRepository implements IUserRepository {
   async delete(id: string) {
     const remaningUsers = this.users.filter((user) => user.id !== id);
     this.users = remaningUsers;
+  }
+
+  async deleteAll() {
+    this.users = [];
   }
 }
