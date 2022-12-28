@@ -11,6 +11,10 @@ const getUserUseCase = new GetUserUseCase({
 });
 
 describe("Get User Use Case", () => {
+  beforeEach(() => {
+    userRepository.deleteAll();
+  });
+
   it("should find an user correctly when pass existing user id", async () => {
     const validUserInputData: UserRepositoryData = {
       id: "valid_id",
@@ -25,8 +29,6 @@ describe("Get User Use Case", () => {
     const createdUser = await getUserUseCase.exec({
       id: validUserInputData.id,
     });
-
-    userRepository.delete(validUserInputData.id);
 
     expect(createdUser).toBeTruthy();
     expect(validUserInputData.id).toEqual(createdUser.getId());

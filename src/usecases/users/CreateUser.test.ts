@@ -10,6 +10,7 @@ import {
   UserService,
   UUIDInMemoryGeneratorService,
 } from "../../infra/services";
+import { CreateUserUseCaseInput } from "./contracts";
 
 const dataValidator = new YupUserValidator();
 const userMapper = new UserMapper();
@@ -28,7 +29,7 @@ const createUserUseCaseProps: CreateUserUseCaseProps = {
 };
 const createUserUseCase = new CreateUserUseCase(createUserUseCaseProps);
 
-const firstUserCreationInputData = {
+const firstUserCreationInputData: CreateUserUseCaseInput = {
   name: "valid_name",
   email: "email@email.com",
   password: "valid_password",
@@ -36,12 +37,15 @@ const firstUserCreationInputData = {
 };
 
 describe("Create User Use Case", () => {
+  beforeEach(async () => {
+    await userRepository.deleteAll();
+  });
+
   it("should create user correctly when pass valid data", async () => {
     const createdUserId = await createUserUseCase.exec(
       firstUserCreationInputData
     );
     const createdUser = await userRepository.findById(createdUserId);
-    await userRepository.delete(createdUserId);
 
     expect(createdUser).toBeTruthy();
     expect(createdUserId).toEqual(createdUser?.id);
@@ -68,14 +72,10 @@ describe("Create User Use Case", () => {
   });
 
   it("should throw error when try create user with already existing email", async () => {
-    const createdUserId = await createUserUseCase.exec(
-      firstUserCreationInputData
-    );
+    await createUserUseCase.exec(firstUserCreationInputData);
     const error = await getThrowedErrorType(async () =>
       createUserUseCase.exec(firstUserCreationInputData)
     );
-
-    await userRepository.delete(createdUserId);
 
     expect(error).not.toBeInstanceOf(NoErrorThrownError);
     expect(error).toBeInstanceOf(BusinessRuleException);

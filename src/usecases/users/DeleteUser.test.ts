@@ -25,6 +25,10 @@ const userValidData: UserRepositoryData = {
 };
 
 describe("Delete User Use Case", () => {
+  beforeEach(async () => {
+    await userRepository.deleteAll();
+  });
+
   it("should delete an user correctly when pass existing user id", async () => {
     userRepository.create(userValidData);
     await deleteUserUseCase.exec({ id: userValidData.id });

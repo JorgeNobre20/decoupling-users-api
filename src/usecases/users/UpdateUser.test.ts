@@ -51,6 +51,10 @@ const updateUserUseCaseProps: UpdateUserUseCaseProps = {
 const updateUserUseCase = new UpdateUserUseCase(updateUserUseCaseProps);
 
 describe("Update User Use Case", () => {
+  beforeEach(() => {
+    userRepository.deleteAll();
+  });
+
   it("should update a user correctly when pass valid data", async () => {
     await userRepository.create(firstUserCreationData);
     const updatedUserData: UpdateUserUseCaseInput = {
@@ -62,8 +66,6 @@ describe("Update User Use Case", () => {
     };
 
     const updatedUser = await updateUserUseCase.exec(updatedUserData);
-
-    await userRepository.delete(firstUserCreationData.id);
 
     expect(updatedUserData.id).toEqual(updatedUser.getId());
     expect(updatedUserData.name).toEqual(updatedUser.getName());
@@ -105,9 +107,6 @@ describe("Update User Use Case", () => {
       updateUserUseCase.exec(updatedUserData)
     );
 
-    await userRepository.delete(firstUserCreationData.id);
-    await userRepository.delete(secondUserCreationData.id);
-
     expect(error).not.toBeInstanceOf(NoErrorThrownError);
     expect(error).toBeInstanceOf(BusinessRuleException);
   });
@@ -126,8 +125,6 @@ describe("Update User Use Case", () => {
     const error = await getThrowedErrorType(() =>
       updateUserUseCase.exec(updatedUserData)
     );
-
-    await userRepository.delete(firstUserCreationData.id);
 
     expect(error).not.toBeInstanceOf(NoErrorThrownError);
     expect(error).toBeInstanceOf(InvalidDataException);
