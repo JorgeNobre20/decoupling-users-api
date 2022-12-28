@@ -1,5 +1,5 @@
-import { UserEntity } from "../../domain/entities";
-import { UseCase } from "../IUseCase";
+import { UserEntity } from "../../../domain/entities";
+import { UseCase } from "../../IUseCase";
 import { CreateUserUseCaseInput } from "./ICreateUser";
 
 export type UpdateUserUseCaseInput = {
