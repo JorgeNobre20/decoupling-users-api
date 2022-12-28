@@ -6,7 +6,7 @@ import {
 import { HttpErrorType, HttpStatus } from "../enums";
 import { HttpResponseModel } from "../models";
 
-type HttpExceptionHandlerResponse = {
+export type HttpExceptionHandlerResponse = {
   message: string;
   errorType: HttpErrorType;
   data?: any;
