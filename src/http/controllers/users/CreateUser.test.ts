@@ -1,5 +1,4 @@
 import { UserRepositoryData } from "../../../data/repositories";
-import { InvalidDataException } from "../../../domain/exceptions";
 import { UserMapper, YupUserValidator } from "../../../infra/adapters";
 import { UserInMemoryRepository } from "../../../infra/repositories";
 import {
