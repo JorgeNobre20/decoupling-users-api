@@ -1,8 +1,19 @@
 import { HttpExceptionHandler } from "../exception-handler";
 import { HttpRequestModel, HttpResponseModel } from "../models";
 
-export abstract class AbstractController<RequestBodyType, ResponseBodyType> {
-  async handle(httpRequest: HttpRequestModel<RequestBodyType>) {
+export abstract class AbstractController<
+  HttpRequestBody = any,
+  HttpRequestRouteParams = any,
+  HttpRequestQueryParams = any,
+  HttpResponseBody = any
+> {
+  async handle(
+    httpRequest: HttpRequestModel<
+      HttpRequestBody,
+      HttpRequestRouteParams,
+      HttpRequestQueryParams
+    >
+  ) {
     try {
       const httpResponse = await this.tryHandle(httpRequest);
       return httpResponse;
@@ -12,8 +23,12 @@ export abstract class AbstractController<RequestBodyType, ResponseBodyType> {
   }
 
   protected abstract tryHandle(
-    httpRequest: HttpRequestModel<RequestBodyType>
-  ): Promise<HttpResponseModel<ResponseBodyType>>;
+    httpRequest: HttpRequestModel<
+      HttpRequestBody,
+      HttpRequestRouteParams,
+      HttpRequestQueryParams
+    >
+  ): Promise<HttpResponseModel<HttpResponseBody>>;
 
   private catchHandle(error: unknown) {
     return HttpExceptionHandler.mapErrorToHttpResponseModel(error as Error);

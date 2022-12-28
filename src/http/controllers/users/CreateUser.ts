@@ -3,16 +3,21 @@ import {
   ICreateUserUseCase,
 } from "../../../usecases/users/contracts";
 import { HttpStatus } from "../../enums";
-import { HttpRequestModel, HttpResponseModel } from "../../models";
+import { HttpResponseModel } from "../../models";
 import { AbstractController } from "../AbstractController";
 import {
-  CreateUserControllerInput,
+  CreateUserControllerBodyInput,
   CreateUserControllerOutput,
   CreateUserControllerProps,
-} from "./contracts";
+  CreateUserControllerQueryParamsInput,
+  CreateUserControllerRouteParamsInput,
+  CreateUserHttpRequest,
+} from "./contracts/CreateUser";
 
 export class CreateUserController extends AbstractController<
-  CreateUserControllerInput,
+  CreateUserControllerBodyInput,
+  CreateUserControllerRouteParamsInput,
+  CreateUserControllerQueryParamsInput,
   CreateUserControllerOutput
 > {
   private createUserUseCase: ICreateUserUseCase;
@@ -23,7 +28,7 @@ export class CreateUserController extends AbstractController<
   }
 
   protected async tryHandle(
-    httpRequest: HttpRequestModel<CreateUserControllerInput>
+    httpRequest: CreateUserHttpRequest
   ): Promise<HttpResponseModel<CreateUserControllerOutput>> {
     const requestBody = httpRequest.body;
 
@@ -33,7 +38,7 @@ export class CreateUserController extends AbstractController<
       password: requestBody.password,
       avatar: requestBody.avatar,
     };
-    await this.createUserUseCase.exec(createUserUseCaseInput);
+    const id = await this.createUserUseCase.exec(createUserUseCaseInput);
 
     const httpResponse: HttpResponseModel<CreateUserControllerOutput> = {
       statusCode: HttpStatus.CREATED,

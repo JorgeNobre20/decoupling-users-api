@@ -1,8 +1,10 @@
 import {
-  CreateUserControllerInput,
+  CreateUserControllerBodyInput,
   CreateUserControllerOutput,
   CreateUserControllerProps,
-} from "../../../../http/controllers/users/contracts";
+  CreateUserControllerQueryParamsInput,
+  CreateUserControllerRouteParamsInput,
+} from "../../../../http/controllers/users/contracts/CreateUser";
 import { CreateUserController } from "../../../../http/controllers/users/CreateUser";
 import { HttpMethod } from "../../../../http/enums";
 import { HttpRoute } from "../../../../http/models";
@@ -16,7 +18,7 @@ import { UserService, UUIDInMemoryGeneratorService } from "../../../services";
 
 const dataValidator = new YupUserValidator();
 const userMapper = new UserMapper();
-const userRepository = new UserInMemoryRepository();
+const userRepository = UserInMemoryRepository.getInstance();
 const userService = new UserService({ userRepository });
 const uuidGenerator = new UUIDInMemoryGeneratorService();
 
@@ -37,7 +39,9 @@ const createUserController = new CreateUserController(
 );
 
 export const createUserRoute: HttpRoute<
-  CreateUserControllerInput,
+  CreateUserControllerBodyInput,
+  CreateUserControllerRouteParamsInput,
+  CreateUserControllerQueryParamsInput,
   CreateUserControllerOutput
 > = {
   method: HttpMethod.POST,

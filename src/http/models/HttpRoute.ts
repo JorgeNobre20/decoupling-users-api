@@ -1,8 +1,18 @@
 import { AbstractController } from "../controllers/AbstractController";
 import { HttpMethod } from "../enums";
 
-export type HttpRoute<RequestBodyType = any, ResponseBodyType = any> = {
+export type HttpRoute<
+  HttpRequestBody = any,
+  HttpRequestRouteParams = any,
+  HttpRequestQueryParams = any,
+  ResponseBodyType = any
+> = {
   path: string;
-  handler: AbstractController<RequestBodyType, ResponseBodyType>;
+  handler: AbstractController<
+    HttpRequestBody,
+    HttpRequestRouteParams,
+    HttpRequestQueryParams,
+    ResponseBodyType
+  >;
   method: HttpMethod;
 };
