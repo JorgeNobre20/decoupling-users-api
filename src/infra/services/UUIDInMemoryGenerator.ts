@@ -1,6 +1,6 @@
 import { IUUIDGeneratorService } from "../../services";
 
-export class UUIDInMemoryGeneratorService extends IUUIDGeneratorService {
+export class UUIDInMemoryGeneratorService implements IUUIDGeneratorService {
   async generate() {
     return new Date().toISOString();
   }

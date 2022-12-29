@@ -29,6 +29,12 @@ export class UserInMemoryRepository implements IUserRepository {
     return this.users.find((user) => user.email === email);
   }
 
+  async findByEmailAndPassword(email: string, password: string) {
+    return this.users.find(
+      (user) => user.email === email && user.password === password
+    );
+  }
+
   async update(input: UserRepositoryData) {
     const remaningUsers = this.users.filter((user) => user.id !== input.id);
     this.users = [...remaningUsers, input];
