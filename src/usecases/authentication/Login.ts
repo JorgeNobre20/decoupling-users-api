@@ -1,6 +1,7 @@
 import { IDataValidator } from "../../adpaters/IDataValidator";
 import { IUserRepository } from "../../data/repositories";
 import { NotFoundException } from "../../domain/exceptions";
+import { BadRequestException } from "../../http/exceptions";
 import { LoginDataValidation } from "../../infra/adapters";
 import {
   AccessTokenPayload,
@@ -50,10 +51,14 @@ export class LoginUseCase implements ILoginUseCase {
       );
     }
 
-    await this.passwordService.checkIfPasswordIsRightOrThrowInvalidDataException(
+    const isPasswordRight = await this.passwordService.isPasswordRight(
       password,
       foundUser.password
     );
+
+    if (!isPasswordRight) {
+      throw new BadRequestException(`Password is wrong`);
+    }
 
     const tokenPayload: AccessTokenPayload = {
       id: foundUser.id,

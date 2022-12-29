@@ -1,4 +1,3 @@
-import { InvalidDataException, InvalidField } from "../../domain/exceptions";
 import { IPasswordService } from "../../services";
 
 export class FakePasswordService implements IPasswordService {
@@ -13,20 +12,12 @@ export class FakePasswordService implements IPasswordService {
     return password;
   }
 
-  async checkIfPasswordIsRightOrThrowInvalidDataException(
+  async isPasswordRight(
     receivedPassword: string,
     rightPassword: string
-  ): Promise<void> {
+  ): Promise<boolean> {
     const encodedPassword = await this.encode(receivedPassword);
 
-    if (encodedPassword !== rightPassword) {
-      const invalidField = new InvalidField({
-        errors: ["Password is wrong"],
-        fieldName: "password",
-        receivedValue: receivedPassword,
-      });
-
-      throw new InvalidDataException([invalidField]);
-    }
+    return encodedPassword === rightPassword;
   }
 }

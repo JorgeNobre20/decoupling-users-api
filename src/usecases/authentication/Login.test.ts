@@ -10,6 +10,7 @@ import { FakePasswordService } from "../../infra/services";
 import { LoginUseCaseInput } from "./contracts";
 import { FakeAccessTokenGeneratorService } from "../../infra/services/FakeAccessTokenGenerator";
 import { UserRepositoryData } from "../../data/repositories";
+import { BadRequestException } from "../../http/exceptions";
 
 const dataValidator = new YupLoginValidator();
 const userRepository = UserInMemoryRepository.getInstance();
@@ -115,10 +116,7 @@ describe("Login User Use Case", () => {
       loginUseCase.exec(input)
     );
 
-    const invalidDataException = error as InvalidDataException;
-
     expect(error).not.toBeInstanceOf(NoErrorThrownError);
-    expect(error).toBeInstanceOf(InvalidDataException);
-    expect(invalidDataException.getErrors()).toHaveLength(1);
+    expect(error).toBeInstanceOf(BadRequestException);
   });
 });
