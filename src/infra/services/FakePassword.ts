@@ -1,6 +1,6 @@
 import { IPasswordService } from "../../services";
 
-export class PasswordFakeService implements IPasswordService {
+export class FakePasswordService implements IPasswordService {
   private readonly encodeSecret = "encoded";
 
   async encode(password: string): Promise<string> {

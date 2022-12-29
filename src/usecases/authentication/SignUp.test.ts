@@ -7,7 +7,7 @@ import {
   InvalidDataException,
 } from "../../domain/exceptions";
 import {
-  PasswordFakeService,
+  FakePasswordService,
   UserService,
   UUIDInMemoryGeneratorService,
 } from "../../infra/services";
@@ -20,7 +20,7 @@ const userService = new UserService({
   userRepository,
 });
 const uuidGeneratorService = new UUIDInMemoryGeneratorService();
-const passwordService = new PasswordFakeService();
+const passwordService = new FakePasswordService();
 
 const signUpUseCaseProps: SignUpUseCaseProps = {
   dataValidator,

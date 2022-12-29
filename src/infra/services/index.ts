@@ -1,3 +1,3 @@
 export * from "./User";
 export * from "./UUIDInMemoryGenerator";
-export * from "./PasswordFake";
+export * from "./FakePassword";
