@@ -4,7 +4,8 @@ import {
   InvalidDataException,
   NotFoundException,
 } from "../../domain/exceptions";
-import { UserMapper, YupUserValidator } from "../../infra/adapters";
+import { YupUserValidator } from "../../infra/adapters";
+import { UserMapper } from "../../infra/data-mapper";
 import { UserInMemoryRepository } from "../../infra/repositories";
 import { UserService } from "../../infra/services";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
@@ -37,6 +38,7 @@ const userMapper = new UserMapper();
 
 const getUserUseCaseProps: GetUserUseCaseProps = {
   userRepository,
+  userMapper,
 };
 const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
 

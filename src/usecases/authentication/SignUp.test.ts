@@ -1,4 +1,4 @@
-import { UserMapper, YupUserValidator } from "../../infra/adapters";
+import { YupUserValidator } from "../../infra/adapters";
 import { UserInMemoryRepository } from "../../infra/repositories";
 import { SignUpUseCase, SignUpUseCaseProps } from "./SignUp";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
@@ -12,6 +12,7 @@ import {
   UUIDInMemoryGeneratorService,
 } from "../../infra/services";
 import { SignUpUseCaseInput } from "./contracts";
+import { UserMapper } from "../../infra/data-mapper";
 
 const dataValidator = new YupUserValidator();
 const userMapper = new UserMapper();

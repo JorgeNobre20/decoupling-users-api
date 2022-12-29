@@ -1,6 +1,6 @@
 import { UserRepositoryData } from "../../data/repositories";
 import { UserEntity, UserEntityProps } from "../../domain/entities";
-import { IUserMapper } from "../../adpaters/IUserMapper";
+import { IUserMapper } from "../../data-mapper/IUserMapper";
 
 export class UserMapper implements IUserMapper {
   mapEntityToRepository(userEntity: UserEntity): UserRepositoryData {

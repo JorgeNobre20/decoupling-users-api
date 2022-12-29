@@ -1,5 +1,6 @@
 import { UserRepositoryData } from "../../../data/repositories";
-import { UserMapper, YupUserValidator } from "../../../infra/adapters";
+import { YupUserValidator } from "../../../infra/adapters";
+import { UserMapper } from "../../../infra/data-mapper";
 import { UserInMemoryRepository } from "../../../infra/repositories";
 import { UserService } from "../../../infra/services";
 import {
@@ -27,6 +28,7 @@ const userService = new UserService({ userRepository });
 
 const getUserUseCaseProps: GetUserUseCaseProps = {
   userRepository,
+  userMapper,
 };
 const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
 

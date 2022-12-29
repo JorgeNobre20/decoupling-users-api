@@ -1,16 +1,19 @@
+import { IUserMapper } from "../../data-mapper";
 import { IUserRepository } from "../../data/repositories";
-import { UserEntity, UserEntityProps } from "../../domain/entities";
-import { NotFoundException } from "../../domain/exceptions/NotFound";
+import { NotFoundException } from "../../domain/exceptions";
 import { IGetUserUseCase, GetUserUseCaseInput } from "./contracts";
 
 export type GetUserUseCaseProps = {
+  userMapper: IUserMapper;
   userRepository: IUserRepository;
 };
 
 export class GetUserUseCase implements IGetUserUseCase {
+  private userMapper: IUserMapper;
   private userRepository: IUserRepository;
 
   constructor(props: GetUserUseCaseProps) {
+    this.userMapper = props.userMapper;
     this.userRepository = props.userRepository;
   }
 
@@ -22,15 +25,7 @@ export class GetUserUseCase implements IGetUserUseCase {
       throw new NotFoundException(`Doesn't exists an user with ID: ${userId}`);
     }
 
-    const userData: UserEntityProps = {
-      id: userExists.id,
-      name: userExists.name,
-      email: userExists.email,
-      password: userExists.password,
-      avatar: userExists.avatar,
-    };
-    const user = new UserEntity(userData);
-
+    const user = this.userMapper.mapRepositoryToEntity(userExists);
     return user;
   }
 }

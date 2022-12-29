@@ -1,5 +1,5 @@
-import { IUserMapper } from "../../adpaters";
 import { IDataValidator } from "../../adpaters/IDataValidator";
+import { IUserMapper } from "../../data-mapper";
 import { IUserRepository } from "../../data/repositories";
 import { UserDataValidation } from "../../infra/adapters/YupUserValidator";
 import {

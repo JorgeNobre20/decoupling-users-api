@@ -1,4 +1,5 @@
 import { UserRepositoryData } from "../../../data/repositories";
+import { UserMapper } from "../../../infra/data-mapper";
 import { UserInMemoryRepository } from "../../../infra/repositories";
 
 import {
@@ -15,9 +16,11 @@ import {
 import { GetUserController } from "./GetUser";
 
 const userRepository = UserInMemoryRepository.getInstance();
+const userMapper = new UserMapper();
 
 const getUserUseCaseProps: GetUserUseCaseProps = {
   userRepository,
+  userMapper,
 };
 const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
 
