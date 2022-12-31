@@ -1,32 +1,28 @@
-import { YupLoginValidator } from "../../infra/adapters";
 import { UserInMemoryRepository } from "../../infra/repositories";
-import { LoginUseCase, LoginUseCaseProps } from "./Login";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import {
   InvalidDataException,
   NotFoundException,
 } from "../../domain/exceptions";
-import { FakePasswordService } from "../../infra/services";
-import { LoginUseCaseInput } from "./contracts";
+import { LoginUseCaseInput, SignUpUseCaseInput } from "./contracts";
 import { FakeAccessTokenGeneratorService } from "../../infra/services/FakeAccessTokenGenerator";
 import { UserRepositoryData } from "../../data/repositories";
 import { BadRequestException } from "../../http/exceptions";
+import {
+  FakeLoginUseCaseBuilder,
+  FakeSignUpUseCaseBuilder,
+} from "../../infra/builders/usecases/authentication";
 
-const dataValidator = new YupLoginValidator();
 const userRepository = UserInMemoryRepository.getInstance();
-const passwordService = new FakePasswordService();
 const accessTokenGeneratorService = new FakeAccessTokenGeneratorService();
 
-const loginUseCaseProps: LoginUseCaseProps = {
-  dataValidator,
-  userRepository,
-  passwordService,
-  accessTokenGeneratorService,
-};
-const loginUseCase = new LoginUseCase(loginUseCaseProps);
+const loginUseCaseBuilder = new FakeLoginUseCaseBuilder();
+const loginUseCase = loginUseCaseBuilder.build();
 
-const validUserCreationData: UserRepositoryData = {
-  id: "valid_id",
+const signUpUseCaseBuilder = new FakeSignUpUseCaseBuilder();
+const signUpUseCase = signUpUseCaseBuilder.build();
+
+const validUserCreationData: SignUpUseCaseInput = {
   name: "valid_name",
   email: "email@email.com",
   password: "valid_passsword",
@@ -39,14 +35,7 @@ describe("Login User Use Case", () => {
   });
 
   it("should generate a valid access token when pass valid credentials", async () => {
-    const encodedValidPassword = await passwordService.encode(
-      validUserCreationData.password
-    );
-
-    await userRepository.create({
-      ...validUserCreationData,
-      password: encodedValidPassword,
-    });
+    const createdUserId = await signUpUseCase.exec(validUserCreationData);
 
     const LoginUseCaseInput: LoginUseCaseInput = {
       email: validUserCreationData.email,
@@ -66,7 +55,7 @@ describe("Login User Use Case", () => {
 
     expect(isValidToken).toBe(true);
     expect(loginUseCaseOutput.accessToken).toBeTruthy();
-    expect(tokenPayload.id).toEqual(validUserCreationData.id);
+    expect(tokenPayload.id).toEqual(createdUserId);
   });
 
   it("should throw validation exception when pass invalid data", async () => {
@@ -98,14 +87,7 @@ describe("Login User Use Case", () => {
   });
 
   it("should throw invalid data exception when pass a existing user email account with wrong password", async () => {
-    const encodedValidPassword = await passwordService.encode(
-      validUserCreationData.password
-    );
-
-    await userRepository.create({
-      ...validUserCreationData,
-      password: encodedValidPassword,
-    });
+    await signUpUseCase.exec(validUserCreationData);
 
     const input: LoginUseCaseInput = {
       email: validUserCreationData.email,

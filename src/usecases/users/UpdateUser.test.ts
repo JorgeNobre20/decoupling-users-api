@@ -5,24 +5,28 @@ import {
   NotFoundException,
 } from "../../domain/exceptions";
 import { YupUserValidator } from "../../infra/adapters";
+import { FakeSignUpUseCaseBuilder } from "../../infra/builders/usecases/authentication";
+import {
+  FakeGetUserUseCaseBuilder,
+  FakeUpdateUserUseCaseBuilder,
+} from "../../infra/builders/usecases/users";
 import { UserMapper } from "../../infra/data-mapper";
 import { UserInMemoryRepository } from "../../infra/repositories";
 import { UserService } from "../../infra/services";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
+import { SignUpUseCaseInput } from "../authentication/contracts";
 import { UpdateUserUseCaseInput } from "./contracts";
 import { GetUserUseCase, GetUserUseCaseProps } from "./GetUser";
 import { UpdateUserUseCase, UpdateUserUseCaseProps } from "./UpdateUser";
 
-const firstUserCreationData: UserRepositoryData = {
-  id: "first_valid_id",
+const firstUserCreationData: SignUpUseCaseInput = {
   name: "any_name",
   email: "any_email@email.com",
   password: "any_password",
   avatar: "any_avatar",
 };
 
-const secondUserCreationData: UserRepositoryData = {
-  id: "second_valid_id",
+const secondUserCreationData: SignUpUseCaseInput = {
   name: "any_name_2",
   email: "any_email_2@email.com",
   password: "any_password_2",
@@ -30,27 +34,15 @@ const secondUserCreationData: UserRepositoryData = {
 };
 
 const userRepository = UserInMemoryRepository.getInstance();
-const userService = new UserService({
-  userRepository,
-});
-const dataValidator = new YupUserValidator();
-const userMapper = new UserMapper();
 
-const getUserUseCaseProps: GetUserUseCaseProps = {
-  userRepository,
-  userMapper,
-};
-const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
+const getUserUseCaseBuilder = new FakeGetUserUseCaseBuilder();
+const getUserUseCase = getUserUseCaseBuilder.build();
 
-const updateUserUseCaseProps: UpdateUserUseCaseProps = {
-  userRepository,
-  userService,
-  dataValidator,
-  userMapper,
-  getUserUseCase,
-};
+const updateUserUseCaseBuilder = new FakeUpdateUserUseCaseBuilder();
+const updateUserUseCase = updateUserUseCaseBuilder.build();
 
-const updateUserUseCase = new UpdateUserUseCase(updateUserUseCaseProps);
+const signUpUseCaseBuilder = new FakeSignUpUseCaseBuilder();
+const signUpUseCase = signUpUseCaseBuilder.build();
 
 describe("Update User Use Case", () => {
   beforeEach(() => {
@@ -58,9 +50,10 @@ describe("Update User Use Case", () => {
   });
 
   it("should update a user correctly when pass valid data", async () => {
-    await userRepository.create(firstUserCreationData);
+    const createdUserId = await signUpUseCase.exec(firstUserCreationData);
+
     const updatedUserData: UpdateUserUseCaseInput = {
-      id: firstUserCreationData.id,
+      id: createdUserId,
       name: "updated_name",
       email: "updated@email.com",
       password: "updated_password",
@@ -94,15 +87,24 @@ describe("Update User Use Case", () => {
   });
 
   it("should throw a business rule exception when try to update user with an already in use email", async () => {
-    await userRepository.create(firstUserCreationData);
-    await userRepository.create(secondUserCreationData);
+    const firstCreatedUserId = await signUpUseCase.exec(firstUserCreationData);
+    const secondCreatedUserId = await signUpUseCase.exec(
+      secondUserCreationData
+    );
+
+    const firstUserCreated = await getUserUseCase.exec({
+      id: firstCreatedUserId,
+    });
+    const secondUserCreated = await getUserUseCase.exec({
+      id: secondCreatedUserId,
+    });
 
     const updatedUserData: UpdateUserUseCaseInput = {
-      id: secondUserCreationData.id,
-      name: secondUserCreationData.name,
-      email: firstUserCreationData.email,
-      password: secondUserCreationData.password,
-      avatar: secondUserCreationData.avatar,
+      id: secondUserCreated.getId(),
+      name: secondUserCreated.getName(),
+      email: firstUserCreated.getEmail(),
+      password: "update_password",
+      avatar: secondUserCreated.getAvatar(),
     };
 
     const error = await getThrowedErrorType(() =>
@@ -114,10 +116,10 @@ describe("Update User Use Case", () => {
   });
 
   it("should throw invalid data exception when try to update user with invalid data", async () => {
-    await userRepository.create(firstUserCreationData);
+    const firstCreatedUserId = await signUpUseCase.exec(firstUserCreationData);
 
     const updatedUserData: UpdateUserUseCaseInput = {
-      id: firstUserCreationData.id,
+      id: firstCreatedUserId,
       name: "",
       email: "invalid_email",
       password: "",

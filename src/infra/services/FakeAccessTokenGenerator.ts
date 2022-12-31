@@ -10,11 +10,11 @@ export class FakeAccessTokenGeneratorService
   private readonly secret = "ACESS_SECRET";
 
   async generateAccessToken(id: string): Promise<string> {
-    return `${this.secret}-${id}`;
+    return `${this.secret}|${id}`;
   }
 
   async validateAndGetPayload(token: string): Promise<AccessTokenPayload> {
-    const [, id] = token.split("-");
+    const [, id] = token.split("|");
     const isInvalid = await this.isInvalid(token);
 
     if (isInvalid) {
@@ -32,7 +32,7 @@ export class FakeAccessTokenGeneratorService
   }
 
   async isValid(token: string): Promise<boolean> {
-    const [secret] = token.split("-");
+    const [secret] = token.split("|");
     return secret === this.secret;
   }
 }
