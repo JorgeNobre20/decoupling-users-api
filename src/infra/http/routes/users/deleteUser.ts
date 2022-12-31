@@ -1,42 +1,20 @@
 import {
   DeleteUserControllerBodyInput,
-  DeleteUserControllerOutput,
-  DeleteUserControllerProps,
-  DeleteUserControllerQueryParamsInput,
   DeleteUserControllerRouteParamsInput,
-} from "../../../../http/controllers/users/contracts/DeleteUser";
-import { DeleteUserController } from "../../../../http/controllers/users/DeleteUser";
+  DeleteUserControllerQueryParamsInput,
+  DeleteUserControllerOutput,
+} from "../../../../http/controllers/users/contracts";
 import { HttpMethod } from "../../../../http/enums";
 import { HttpRoute } from "../../../../http/models";
-import {
-  DeleteUserUseCase,
-  DeleteUserUseCaseProps,
-} from "../../../../usecases/users/DeleteUser";
-import {
-  GetUserUseCase,
-  GetUserUseCaseProps,
-} from "../../../../usecases/users/GetUser";
-import { UserInMemoryRepository } from "../../../repositories";
+import { FakeDeleteUserControllerBuilder } from "../../../builders/controllers/users";
 
-const userRepository = UserInMemoryRepository.getInstance();
+const fakeDeleteUserControllerBuilder = new FakeDeleteUserControllerBuilder();
+const fakeDeleteUserController = fakeDeleteUserControllerBuilder.build();
 
-const getUserUseCaseProps: GetUserUseCaseProps = {
-  userRepository,
-};
-const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
-
-const deleteUserUseCaseProps: DeleteUserUseCaseProps = {
-  userRepository,
-  getUserUseCase,
-};
-const deleteUserUseCase = new DeleteUserUseCase(deleteUserUseCaseProps);
-
-const deleteUserControllerProps: DeleteUserControllerProps = {
-  deleteUserUseCase,
-};
-const deleteUserController = new DeleteUserController(
-  deleteUserControllerProps
-);
+const isDevelopment = true;
+const handler = isDevelopment
+  ? fakeDeleteUserController
+  : fakeDeleteUserController;
 
 export const deleteUserRoute: HttpRoute<
   DeleteUserControllerBodyInput,
@@ -46,5 +24,5 @@ export const deleteUserRoute: HttpRoute<
 > = {
   method: HttpMethod.DELETE,
   path: "users/:id",
-  handler: deleteUserController,
+  handler,
 };

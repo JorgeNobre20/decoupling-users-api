@@ -1,23 +1,19 @@
 import { UserInMemoryRepository } from "../../infra/repositories";
-import { GetUserUseCase } from "./GetUser";
-import { DeleteUserUseCase } from "./DeleteUser";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import { NotFoundException } from "../../domain/exceptions";
-import { UserRepositoryData } from "../../data/repositories";
+import { FakeDeleteUserUseCaseBuilder } from "../../infra/builders/usecases/users";
+import { FakeSignUpUseCaseBuilder } from "../../infra/builders/usecases/authentication";
+import { SignUpUseCaseInput } from "../authentication/contracts";
 
 const userRepository = UserInMemoryRepository.getInstance();
 
-const getUserUseCase = new GetUserUseCase({
-  userRepository,
-});
+const fakeSignUpUseCase = new FakeSignUpUseCaseBuilder();
+const signUpUseCase = fakeSignUpUseCase.build();
 
-const deleteUserUseCase = new DeleteUserUseCase({
-  getUserUseCase,
-  userRepository,
-});
+const deleteUserUseCaseBulder = new FakeDeleteUserUseCaseBuilder();
+const deleteUserUseCase = deleteUserUseCaseBulder.build();
 
-const userValidData: UserRepositoryData = {
-  id: "valid_id",
+const userValidData: SignUpUseCaseInput = {
   name: "valid_name",
   email: "email@email.com",
   password: "valid_password",
@@ -30,19 +26,14 @@ describe("Delete User Use Case", () => {
   });
 
   it("should delete an user correctly when pass existing user id", async () => {
-    userRepository.create(userValidData);
-    await deleteUserUseCase.exec({ id: userValidData.id });
+    const createdUserId = await signUpUseCase.exec(userValidData);
+    await deleteUserUseCase.exec({ id: createdUserId });
 
-    const removedUser = await userRepository.findById(userValidData.id);
+    const removedUser = await userRepository.findById(createdUserId);
     expect(removedUser).toBeFalsy();
   });
 
   it("should throw not not found exception when pass a not existing user id", async () => {
-    const deleteUserUseCase = new DeleteUserUseCase({
-      getUserUseCase,
-      userRepository,
-    });
-
     const invalidId = "invalid_id";
 
     const error = await getThrowedErrorType(() =>

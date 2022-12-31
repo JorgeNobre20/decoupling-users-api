@@ -1,36 +1,21 @@
-import { UserMapper, YupUserValidator } from "../../infra/adapters";
 import { UserInMemoryRepository } from "../../infra/repositories";
-import { SignUpUseCase, SignUpUseCaseProps } from "./SignUp";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import {
   BusinessRuleException,
   InvalidDataException,
 } from "../../domain/exceptions";
-import {
-  PasswordFakeService,
-  UserService,
-  UUIDInMemoryGeneratorService,
-} from "../../infra/services";
 import { SignUpUseCaseInput } from "./contracts";
+import { FakeSignUpUseCaseBuilder } from "../../infra/builders/usecases/authentication";
+import { FakeGetUserUseCaseBuilder } from "../../infra/builders/usecases/users";
+import { FakePasswordService } from "../../infra/services";
 
-const dataValidator = new YupUserValidator();
-const userMapper = new UserMapper();
-const userRepository = UserInMemoryRepository.getInstance();
-const userService = new UserService({
-  userRepository,
-});
-const uuidGeneratorService = new UUIDInMemoryGeneratorService();
-const passwordService = new PasswordFakeService();
+const signUpUseCaseBuilder = new FakeSignUpUseCaseBuilder();
+const signUpUseCase = signUpUseCaseBuilder.build();
 
-const signUpUseCaseProps: SignUpUseCaseProps = {
-  dataValidator,
-  userMapper,
-  userRepository,
-  uuidGeneratorService,
-  userService,
-  passwordService,
-};
-const signUpUseCase = new SignUpUseCase(signUpUseCaseProps);
+const getUserUseCaseBuilder = new FakeGetUserUseCaseBuilder();
+const getUserUseCase = getUserUseCaseBuilder.build();
+
+const passwordService = new FakePasswordService();
 
 const firstUserCreationInputData: SignUpUseCaseInput = {
   name: "valid_name",
@@ -41,22 +26,24 @@ const firstUserCreationInputData: SignUpUseCaseInput = {
 
 describe("SignUp User Use Case", () => {
   beforeEach(async () => {
-    await userRepository.deleteAll();
+    await UserInMemoryRepository.getInstance().deleteAll();
   });
 
   it("should create user correctly when pass valid data", async () => {
     const createdUserId = await signUpUseCase.exec(firstUserCreationInputData);
-    const createdUser = await userRepository.findById(createdUserId);
-    const encodedPassword = await passwordService.encode(
-      firstUserCreationInputData.password
+    const createdUser = await getUserUseCase.exec({ id: createdUserId });
+
+    const passwordComparison = passwordService.isPasswordRight(
+      firstUserCreationInputData.password,
+      createdUser.getPassword()
     );
 
     expect(createdUser).toBeTruthy();
-    expect(createdUserId).toEqual(createdUser?.id);
-    expect(firstUserCreationInputData.name).toEqual(createdUser?.name);
-    expect(firstUserCreationInputData.email).toEqual(createdUser?.email);
-    expect(encodedPassword).toEqual(createdUser?.password);
-    expect(firstUserCreationInputData.avatar).toEqual(createdUser?.avatar);
+    expect(createdUserId).toEqual(createdUser?.getId());
+    expect(firstUserCreationInputData.name).toEqual(createdUser?.getName());
+    expect(firstUserCreationInputData.email).toEqual(createdUser?.getEmail());
+    expect(passwordComparison).toBeTruthy();
+    expect(firstUserCreationInputData.avatar).toEqual(createdUser?.getAvatar());
   });
 
   it("should throw error when pass invalid data", async () => {

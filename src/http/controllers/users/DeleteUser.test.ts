@@ -1,4 +1,5 @@
 import { UserRepositoryData } from "../../../data/repositories";
+import { UserMapper } from "../../../infra/data-mapper";
 import { UserInMemoryRepository } from "../../../infra/repositories";
 import {
   DeleteUserUseCase,
@@ -18,9 +19,11 @@ import {
 import { DeleteUserController } from "./DeleteUser";
 
 const userRepository = UserInMemoryRepository.getInstance();
+const userMapper = new UserMapper();
 
 const getUserUseCaseProps: GetUserUseCaseProps = {
   userRepository,
+  userMapper,
 };
 const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
 

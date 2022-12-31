@@ -3,11 +3,14 @@ import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import { NotFoundException } from "../../domain/exceptions";
 import { GetUserUseCase } from "./GetUser";
 import { UserRepositoryData } from "../../data/repositories";
+import { UserMapper } from "../../infra/data-mapper";
 
 const userRepository = UserInMemoryRepository.getInstance();
+const userMapper = new UserMapper();
 
 const getUserUseCase = new GetUserUseCase({
   userRepository,
+  userMapper,
 });
 
 describe("Get User Use Case", () => {

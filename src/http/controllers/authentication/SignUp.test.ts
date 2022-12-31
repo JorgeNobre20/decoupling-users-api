@@ -1,8 +1,9 @@
 import { UserRepositoryData } from "../../../data/repositories";
-import { UserMapper, YupUserValidator } from "../../../infra/adapters";
+import { YupUserValidator } from "../../../infra/adapters";
+import { UserMapper } from "../../../infra/data-mapper";
 import { UserInMemoryRepository } from "../../../infra/repositories";
 import {
-  PasswordFakeService,
+  FakePasswordService,
   UserService,
   UUIDInMemoryGeneratorService,
 } from "../../../infra/services";
@@ -20,7 +21,7 @@ const userMapper = new UserMapper();
 const userRepository = UserInMemoryRepository.getInstance();
 const userService = new UserService({ userRepository });
 const uuidGeneratorService = new UUIDInMemoryGeneratorService();
-const passwordService = new PasswordFakeService();
+const passwordService = new FakePasswordService();
 
 const signUpUseCaseProps: SignUpUseCaseProps = {
   dataValidator,
