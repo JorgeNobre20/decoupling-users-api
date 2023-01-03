@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from "../../domain/exceptions";
 import { LoginUseCaseInput, SignUpUseCaseInput } from "./contracts";
-import { FakeAccessTokenGeneratorService } from "../../infra/services/FakeAccessTokenGenerator";
+import { FakeAccessTokenGeneratorService } from "../../infra/services/FakeAccessToken";
 import { UserRepositoryData } from "../../data/repositories";
 import { BadRequestException } from "../../http/exceptions";
 import {

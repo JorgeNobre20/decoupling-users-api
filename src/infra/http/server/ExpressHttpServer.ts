@@ -1,8 +1,23 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 import { AbstractController } from "../../../http/controllers/AbstractController";
+import { IHttpMiddlewareHandler } from "../../../http/middleware";
 import { HttpRequestModel, HttpRoute } from "../../../http/models";
 
 import { HttpServer } from "../../../http/server/HttpServer";
+import { JwtAccessTokenService } from "../../services";
+import { ExpressAuthMiddlewareHandler } from "../middlewares";
+
+type ExpressMiddlewareHandlerType = IHttpMiddlewareHandler<
+  Request,
+  Response,
+  NextFunction,
+  any
+>;
+
+const jwtAccessTokenService = new JwtAccessTokenService();
+const expressAuthMiddlewareHandler = new ExpressAuthMiddlewareHandler({
+  accessTokenService: jwtAccessTokenService,
+});
 
 export class ExpressHttpServer extends HttpServer {
   private server: Express;
@@ -28,10 +43,30 @@ export class ExpressHttpServer extends HttpServer {
       const method = route.method.toLowerCase() as keyof typeof this.server;
       const path = this.getCompletePath(route.path);
 
-      this.server[method](path, (request: Request, response: Response) => {
-        return this.adaptExpressRequest(request, response, route.handler);
-      });
+      const parsedMiddlewareHandlers =
+        route.middlewareHandlers as ExpressMiddlewareHandlerType[];
+
+      const middlewares = parsedMiddlewareHandlers.map((middleware) =>
+        middleware.exec.bind(middleware)
+      );
+
+      if (route.requiresAuthentication) {
+        const authMiddleware = this.getAuthMiddleware();
+        middlewares.push(authMiddleware);
+      }
+
+      this.server[method](
+        path,
+        ...middlewares,
+        (request: Request, response: Response) => {
+          return this.adaptExpressRequest(request, response, route.handler);
+        }
+      );
     });
+  }
+
+  private getAuthMiddleware() {
+    return expressAuthMiddlewareHandler.exec.bind(expressAuthMiddlewareHandler);
   }
 
   private async adaptExpressRequest(

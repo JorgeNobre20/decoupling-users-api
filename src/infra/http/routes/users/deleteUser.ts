@@ -23,6 +23,8 @@ export const deleteUserRoute: HttpRoute<
   DeleteUserControllerOutput
 > = {
   method: HttpMethod.DELETE,
-  path: "users/:id",
+  path: "users",
   handler,
+  middlewareHandlers: [],
+  requiresAuthentication: true,
 };

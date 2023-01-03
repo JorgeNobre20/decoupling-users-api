@@ -23,6 +23,8 @@ export const updateUserRoute: HttpRoute<
   UpdateUserControllerOutput
 > = {
   method: HttpMethod.PUT,
-  path: "users/:id",
+  path: "users",
   handler,
+  middlewareHandlers: [],
+  requiresAuthentication: true,
 };

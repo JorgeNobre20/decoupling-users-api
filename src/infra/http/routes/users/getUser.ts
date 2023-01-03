@@ -21,6 +21,8 @@ export const getUserRoute: HttpRoute<
   GetUserControllerOutput
 > = {
   method: HttpMethod.GET,
-  path: "users/:id",
+  path: "users",
   handler,
+  middlewareHandlers: [],
+  requiresAuthentication: true,
 };

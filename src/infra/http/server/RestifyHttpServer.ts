@@ -8,9 +8,23 @@ import {
 } from "restify";
 import { AbstractController } from "../../../http/controllers/AbstractController";
 import { HttpMethod } from "../../../http/enums";
+import { INoNextHttpMiddlewareHandler } from "../../../http/middleware";
 import { HttpRequestModel, HttpRoute } from "../../../http/models";
 
 import { HttpServer } from "../../../http/server/HttpServer";
+import { JwtAccessTokenService } from "../../services";
+import { RestifyAuthMiddlewareHandler } from "../middlewares/RestifyAuthMiddewareHandler";
+
+const jwtAccessTokenService = new JwtAccessTokenService();
+const restifyAuthMiddlewareHandler = new RestifyAuthMiddlewareHandler({
+  accessTokenService: jwtAccessTokenService,
+});
+
+type RestifyMiddlewareHandlerType = INoNextHttpMiddlewareHandler<
+  Request,
+  Response,
+  any
+>;
 
 export class RestifyHttpServer extends HttpServer {
   private server: Server;
@@ -57,33 +71,39 @@ export class RestifyHttpServer extends HttpServer {
     });
   }
 
-  private async adaptGet(route: HttpRoute<any, any>) {
-    const path = this.getCompletePath(route.path);
+  private async adaptGet(route: HttpRoute) {
+    const { completePath: path, middlewares } =
+      this.getCompletePathAndMiddlewares(route);
 
     this.server.get(
       path,
+      ...middlewares,
       (request: Request, response: Response, next: Next) => {
         this.adaptRestifyRequest(request, response, route.handler);
       }
     );
   }
 
-  private async adaptPost(route: HttpRoute<any, any>) {
-    const path = this.getCompletePath(route.path);
+  private async adaptPost(route: HttpRoute) {
+    const { completePath: path, middlewares } =
+      this.getCompletePathAndMiddlewares(route);
 
     this.server.post(
       path,
+      ...middlewares,
       (request: Request, response: Response, next: Next) => {
         this.adaptRestifyRequest(request, response, route.handler);
       }
     );
   }
 
-  private async adaptPut(route: HttpRoute<any, any>) {
-    const path = this.getCompletePath(route.path);
+  private async adaptPut(route: HttpRoute) {
+    const { completePath: path, middlewares } =
+      this.getCompletePathAndMiddlewares(route);
 
     this.server.put(
       path,
+      ...middlewares,
       (request: Request, response: Response, next: Next) => {
         this.adaptRestifyRequest(request, response, route.handler);
       }
@@ -91,14 +111,54 @@ export class RestifyHttpServer extends HttpServer {
   }
 
   private async adaptDelete(route: HttpRoute<any, any>) {
-    const path = this.getCompletePath(route.path);
+    const { completePath: path, middlewares } =
+      this.getCompletePathAndMiddlewares(route);
 
     this.server.del(
       path,
+      ...middlewares,
       (request: Request, response: Response, next: Next) => {
         this.adaptRestifyRequest(request, response, route.handler);
       }
     );
+  }
+
+  private adaptMiddlewares(
+    requiresAuthentication: boolean,
+    middlewares: INoNextHttpMiddlewareHandler<Request, Response, any>[]
+  ) {
+    const middlewareMethods = middlewares.map((middleware) => {
+      return middleware.exec.bind(middleware);
+    });
+
+    if (requiresAuthentication) {
+      const authMiddleware = this.getAuthMiddleware();
+      middlewareMethods.push(authMiddleware);
+    }
+
+    return middlewareMethods;
+  }
+
+  private getCompletePathAndMiddlewares(route: HttpRoute) {
+    const { requiresAuthentication, path } = route;
+    const completePath = this.getCompletePath(path);
+
+    const parsedMiddlewares =
+      route.middlewareHandlers as RestifyMiddlewareHandlerType[];
+
+    const middlewares = this.adaptMiddlewares(
+      requiresAuthentication,
+      parsedMiddlewares
+    );
+
+    return {
+      middlewares,
+      completePath,
+    };
+  }
+
+  private getAuthMiddleware() {
+    return restifyAuthMiddlewareHandler.exec.bind(restifyAuthMiddlewareHandler);
   }
 
   private async adaptRestifyRequest<RequestBodyType, ResponseBodyType>(

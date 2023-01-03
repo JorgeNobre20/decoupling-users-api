@@ -5,7 +5,7 @@ import { BadRequestException } from "../../http/exceptions";
 import { LoginDataValidation } from "../../infra/adapters";
 import {
   AccessTokenPayload,
-  IAccessTokenGeneratorService,
+  IAccessTokenService,
   IPasswordService,
 } from "../../services";
 import {
@@ -15,7 +15,7 @@ import {
 } from "./contracts/ILogin";
 
 export type LoginUseCaseProps = {
-  accessTokenGeneratorService: IAccessTokenGeneratorService;
+  accessTokenGeneratorService: IAccessTokenService;
   userRepository: IUserRepository;
   dataValidator: IDataValidator<LoginDataValidation>;
   passwordService: IPasswordService;
@@ -26,7 +26,7 @@ export class LoginUseCase implements ILoginUseCase {
   private dataValidator: IDataValidator<LoginDataValidation>;
 
   private passwordService: IPasswordService;
-  private accessTokenGeneratorService: IAccessTokenGeneratorService;
+  private accessTokenGeneratorService: IAccessTokenService;
 
   constructor(props: LoginUseCaseProps) {
     this.accessTokenGeneratorService = props.accessTokenGeneratorService;
