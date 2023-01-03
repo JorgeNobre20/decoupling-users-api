@@ -1,23 +1,17 @@
-import { UserRepositoryData } from "../../data/repositories";
 import {
   BusinessRuleException,
   InvalidDataException,
   NotFoundException,
 } from "../../domain/exceptions";
-import { YupUserValidator } from "../../infra/adapters";
 import { FakeSignUpUseCaseBuilder } from "../../infra/builders/usecases/authentication";
 import {
   FakeGetUserUseCaseBuilder,
   FakeUpdateUserUseCaseBuilder,
 } from "../../infra/builders/usecases/users";
-import { UserMapper } from "../../infra/data-mapper";
 import { UserInMemoryRepository } from "../../infra/repositories";
-import { UserService } from "../../infra/services";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import { SignUpUseCaseInput } from "../authentication/contracts";
 import { UpdateUserUseCaseInput } from "./contracts";
-import { GetUserUseCase, GetUserUseCaseProps } from "./GetUser";
-import { UpdateUserUseCase, UpdateUserUseCaseProps } from "./UpdateUser";
 
 const firstUserCreationData: SignUpUseCaseInput = {
   name: "any_name",
