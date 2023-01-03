@@ -5,7 +5,7 @@ import { AbstractController } from "../../AbstractController";
 export type GetUserControllerBodyInput = {};
 
 export type GetUserControllerRouteParamsInput = {
-  id: string;
+  userId: string;
 };
 
 export type GetUserControllerQueryParamsInput = {};

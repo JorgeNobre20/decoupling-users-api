@@ -11,7 +11,14 @@ dotenv.config({
   path: resolvedFilePath,
 });
 
-export const ENVIRONMENT_CONFIG = {
-  SERVER_PORT: Number(process.env.SERVER_PORT!),
-  NODE_ENV: process.env.NODE_ENV,
+export const SERVER_CONFIG = {
+  PORT: Number(process.env.SERVER_PORT!),
+  ENV: process.env.NODE_ENV,
+};
+
+export const JWT_AUTHENTICATION_CONFIG = {
+  SECRET: process.env.JWT_SECRET!,
+  EXPIRATION_TIME_IN_SECONDS: Number(
+    process.env.JWT_EXPIRATION_TIME_IN_SECONDS!
+  ),
 };

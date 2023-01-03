@@ -10,7 +10,7 @@ export type UpdateUserControllerBodyInput = {
 };
 
 export type UpdateUserControllerRouteParamsInput = {
-  id: string;
+  userId: string;
 };
 
 export type UpdateUserControllerQueryParamsInput = {};

@@ -23,4 +23,6 @@ export const loginRoute: HttpRoute<
   method: HttpMethod.POST,
   path: "auth/login",
   handler,
+  middlewareHandlers: [],
+  requiresAuthentication: false,
 };

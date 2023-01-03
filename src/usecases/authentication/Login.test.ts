@@ -5,8 +5,7 @@ import {
   NotFoundException,
 } from "../../domain/exceptions";
 import { LoginUseCaseInput, SignUpUseCaseInput } from "./contracts";
-import { FakeAccessTokenGeneratorService } from "../../infra/services/FakeAccessTokenGenerator";
-import { UserRepositoryData } from "../../data/repositories";
+import { FakeAccessTokenService } from "../../infra/services/FakeAccessToken";
 import { BadRequestException } from "../../http/exceptions";
 import {
   FakeLoginUseCaseBuilder,
@@ -14,7 +13,7 @@ import {
 } from "../../infra/builders/usecases/authentication";
 
 const userRepository = UserInMemoryRepository.getInstance();
-const accessTokenGeneratorService = new FakeAccessTokenGeneratorService();
+const accessTokenGeneratorService = new FakeAccessTokenService();
 
 const loginUseCaseBuilder = new FakeLoginUseCaseBuilder();
 const loginUseCase = loginUseCaseBuilder.build();

@@ -1,12 +1,7 @@
 import { UnauthorizedException } from "../../domain/exceptions";
-import {
-  AccessTokenPayload,
-  IAccessTokenGeneratorService,
-} from "../../services";
+import { AccessTokenPayload, IAccessTokenService } from "../../services";
 
-export class FakeAccessTokenGeneratorService
-  implements IAccessTokenGeneratorService
-{
+export class FakeAccessTokenService implements IAccessTokenService {
   private readonly secret = "ACESS_SECRET";
 
   async generateAccessToken(id: string): Promise<string> {

@@ -5,7 +5,7 @@ import { AbstractController } from "../../AbstractController";
 export type DeleteUserControllerBodyInput = {};
 
 export type DeleteUserControllerRouteParamsInput = {
-  id: string;
+  userId: string;
 };
 
 export type DeleteUserControllerQueryParamsInput = {};

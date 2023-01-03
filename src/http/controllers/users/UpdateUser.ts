@@ -35,7 +35,7 @@ export class UpdateUserController extends AbstractController<
     const routeParams = httpRequest.params;
 
     const updateUserUseCaseInput: UpdateUserUseCaseInput = {
-      id: routeParams.id,
+      id: routeParams.userId,
       name: requestBody.name,
       email: requestBody.email,
       password: requestBody.password,

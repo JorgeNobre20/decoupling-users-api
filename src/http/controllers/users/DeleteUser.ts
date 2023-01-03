@@ -30,7 +30,7 @@ export class DeleteUserController extends AbstractController<
   protected async tryHandle(
     httpRequest: DeleteUserHttpRequest
   ): Promise<HttpResponseModel<DeleteUserControllerOutput>> {
-    const userId = httpRequest.params.id;
+    const userId = httpRequest.params.userId;
 
     const deleteUserUseCaseInput: DeleteUserUseCaseInput = {
       id: userId,

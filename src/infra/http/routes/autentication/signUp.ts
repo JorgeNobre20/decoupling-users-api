@@ -23,4 +23,6 @@ export const signUpRoute: HttpRoute<
   method: HttpMethod.POST,
   path: "auth/sign-up",
   handler,
+  middlewareHandlers: [],
+  requiresAuthentication: false,
 };
