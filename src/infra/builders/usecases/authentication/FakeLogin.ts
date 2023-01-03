@@ -6,11 +6,7 @@ import {
 } from "../../../../usecases/authentication/Login";
 import { YupLoginValidator } from "../../../adapters";
 import { UserInMemoryRepository } from "../../../repositories";
-import {
-  FakeAccessTokenService,
-  FakePasswordService,
-  JwtAccessTokenService,
-} from "../../../services";
+import { FakeAccessTokenService, FakePasswordService } from "../../../services";
 
 export class FakeLoginUseCaseBuilder implements ILoginUseCaseBuilder {
   build(): ILoginUseCase {
@@ -18,7 +14,7 @@ export class FakeLoginUseCaseBuilder implements ILoginUseCaseBuilder {
     const userRepository = UserInMemoryRepository.getInstance();
 
     const passwordService = new FakePasswordService();
-    const accessTokenGeneratorService = new JwtAccessTokenService();
+    const accessTokenGeneratorService = new FakeAccessTokenService();
 
     const loginUseCaseProps: LoginUseCaseProps = {
       dataValidator,

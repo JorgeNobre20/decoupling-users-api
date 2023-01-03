@@ -3,7 +3,7 @@ import { YupLoginValidator } from "../../../infra/adapters";
 import { UserInMemoryRepository } from "../../../infra/repositories";
 import {
   FakePasswordService,
-  FakeAccessTokenGeneratorService,
+  FakeAccessTokenService,
 } from "../../../infra/services";
 import {
   LoginUseCase,
@@ -21,7 +21,7 @@ import { LoginController } from "./Login";
 const dataValidator = new YupLoginValidator();
 const userRepository = UserInMemoryRepository.getInstance();
 const passwordService = new FakePasswordService();
-const accessTokenGeneratorService = new FakeAccessTokenGeneratorService();
+const accessTokenGeneratorService = new FakeAccessTokenService();
 
 const loginUseCaseProps: LoginUseCaseProps = {
   dataValidator,

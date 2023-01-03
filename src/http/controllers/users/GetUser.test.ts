@@ -47,7 +47,7 @@ describe("Get User Http Controller", () => {
     const httpRequest: GetUserHttpRequest = {
       body: {},
       params: {
-        id: createdUserData.id,
+        userId: createdUserData.id,
       },
       query: {},
     };
@@ -67,7 +67,7 @@ describe("Get User Http Controller", () => {
     const httpRequest: GetUserHttpRequest = {
       body: {},
       params: {
-        id: "not_existing_id",
+        userId: "not_existing_id",
       },
       query: {},
     };

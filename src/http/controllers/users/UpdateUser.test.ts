@@ -81,7 +81,7 @@ describe("Update User Http Controller", () => {
     const httpRequest: UpdateUserHttpRequest = {
       body: updatedData,
       params: {
-        id: firstUserCreationData.id,
+        userId: firstUserCreationData.id,
       },
       query: {},
     };
@@ -107,7 +107,7 @@ describe("Update User Http Controller", () => {
         avatar: "",
       },
       params: {
-        id: firstUserCreationData.id,
+        userId: firstUserCreationData.id,
       },
       query: {},
     };
@@ -131,7 +131,7 @@ describe("Update User Http Controller", () => {
         avatar: "updated_avatar",
       },
       params: {
-        id: "not_existing_id",
+        userId: "not_existing_id",
       },
       query: {},
     };
@@ -157,7 +157,7 @@ describe("Update User Http Controller", () => {
         avatar: "updated_avatar",
       },
       params: {
-        id: firstUserCreationData.id,
+        userId: firstUserCreationData.id,
       },
       query: {},
     };

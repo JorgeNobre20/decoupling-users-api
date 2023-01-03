@@ -59,7 +59,7 @@ describe("Delete User Http Controller", () => {
     const httpRequest: DeleteUserHttpRequest = {
       body: {},
       params: {
-        id: createdUser.id,
+        userId: createdUser.id,
       },
       query: {},
     };
@@ -76,7 +76,7 @@ describe("Delete User Http Controller", () => {
     const httpRequest: DeleteUserHttpRequest = {
       body: {},
       params: {
-        id: "not_existing_id",
+        userId: "not_existing_id",
       },
       query: {},
     };

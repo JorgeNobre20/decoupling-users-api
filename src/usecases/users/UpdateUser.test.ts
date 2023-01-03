@@ -45,8 +45,8 @@ const signUpUseCaseBuilder = new FakeSignUpUseCaseBuilder();
 const signUpUseCase = signUpUseCaseBuilder.build();
 
 describe("Update User Use Case", () => {
-  beforeEach(() => {
-    userRepository.deleteAll();
+  beforeEach(async () => {
+    await userRepository.deleteAll();
   });
 
   it("should update a user correctly when pass valid data", async () => {
@@ -98,6 +98,9 @@ describe("Update User Use Case", () => {
     const secondUserCreated = await getUserUseCase.exec({
       id: secondCreatedUserId,
     });
+
+    console.log(firstUserCreated);
+    console.log(secondUserCreated);
 
     const updatedUserData: UpdateUserUseCaseInput = {
       id: secondUserCreated.getId(),
