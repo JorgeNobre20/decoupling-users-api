@@ -2,25 +2,25 @@ import { ISignUpUseCaseBuilder } from "../../../../builders/usecases/authenticat
 import { ISignUpUseCase } from "../../../../usecases/authentication/contracts";
 import {
   SignUpUseCase,
-  SignUpUseCaseProps,
+  SignUpUseCaseProps
 } from "../../../../usecases/authentication/SignUp";
 import { YupUserValidator } from "../../../adapters";
 import { UserMapper } from "../../../data-mapper";
-import { UserInMemoryRepository } from "../../../data/repositories";
+import { KnexUserRepository } from "../../../data/repositories/KnexUserRepository";
 import {
-  FakePasswordService,
+  CryptoPasswordService,
   UserService,
-  UUIDInMemoryGeneratorService,
+  UUIDV4GeneratorService
 } from "../../../services";
 
-export class FakeSignUpUseCaseBuilder implements ISignUpUseCaseBuilder {
+export class SignUpUseCaseBuilder implements ISignUpUseCaseBuilder {
   build(): ISignUpUseCase {
     const dataValidator = new YupUserValidator();
-    const passwordService = new FakePasswordService();
+    const passwordService = new CryptoPasswordService();
     const userMapper = new UserMapper();
-    const userRepository = UserInMemoryRepository.getInstance();
+    const userRepository = KnexUserRepository.getInstance();
     const userService = new UserService({ userRepository });
-    const uuidGeneratorService = new UUIDInMemoryGeneratorService();
+    const uuidGeneratorService = new UUIDV4GeneratorService();
 
     const signUpUseCaseProps: SignUpUseCaseProps = {
       dataValidator,
@@ -28,7 +28,7 @@ export class FakeSignUpUseCaseBuilder implements ISignUpUseCaseBuilder {
       userMapper,
       userRepository,
       userService,
-      uuidGeneratorService,
+      uuidGeneratorService
     };
 
     const signUpUseCase = new SignUpUseCase(signUpUseCaseProps);

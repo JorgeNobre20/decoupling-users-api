@@ -2,10 +2,10 @@ import { ILoginUseCaseBuilder } from "../../../../builders/usecases/authenticati
 import { ILoginUseCase } from "../../../../usecases/authentication/contracts";
 import {
   LoginUseCase,
-  LoginUseCaseProps,
+  LoginUseCaseProps
 } from "../../../../usecases/authentication/Login";
 import { YupLoginValidator } from "../../../adapters";
-import { UserInMemoryRepository } from "../../../repositories";
+import { UserInMemoryRepository } from "../../../data/repositories";
 import { FakeAccessTokenService, FakePasswordService } from "../../../services";
 
 export class FakeLoginUseCaseBuilder implements ILoginUseCaseBuilder {
@@ -14,13 +14,13 @@ export class FakeLoginUseCaseBuilder implements ILoginUseCaseBuilder {
     const userRepository = UserInMemoryRepository.getInstance();
 
     const passwordService = new FakePasswordService();
-    const accessTokenGeneratorService = new FakeAccessTokenService();
+    const accessTokenService = new FakeAccessTokenService();
 
     const loginUseCaseProps: LoginUseCaseProps = {
       dataValidator,
       passwordService,
       userRepository,
-      accessTokenGeneratorService,
+      accessTokenService
     };
 
     const loginUseCase = new LoginUseCase(loginUseCaseProps);

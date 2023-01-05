@@ -4,13 +4,13 @@ import {
   DeleteUserUseCase,
   DeleteUserUseCaseProps
 } from "../../../../usecases/users/DeleteUser";
-import { UserInMemoryRepository } from "../../../data/repositories";
-import { FakeGetUserUseCaseBuilder } from "./FakeGet";
+import { KnexUserRepository } from "../../../data/repositories/KnexUserRepository";
+import { GetUserUseCaseBuilder } from "./Get";
 
-export class FakeDeleteUserUseCaseBuilder implements IDeleteUserUseCaseBuilder {
+export class DeleteUserUseCaseBuilder implements IDeleteUserUseCaseBuilder {
   build(): IDeleteUserUseCase {
-    const userRepository = UserInMemoryRepository.getInstance();
-    const getUserUseCase = new FakeGetUserUseCaseBuilder().build();
+    const userRepository = KnexUserRepository.getInstance();
+    const getUserUseCase = new GetUserUseCaseBuilder().build();
 
     const deleteUserUseCaseProps: DeleteUserUseCaseProps = {
       userRepository,

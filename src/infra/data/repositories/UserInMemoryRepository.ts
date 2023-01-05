@@ -1,7 +1,7 @@
 import {
   IUserRepository,
   UserRepositoryData,
-} from "../../data/repositories/IUser";
+} from "../../../data/repositories/IUser";
 
 export class UserInMemoryRepository implements IUserRepository {
   private users: UserRepositoryData[] = [];

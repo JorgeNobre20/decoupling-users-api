@@ -1,10 +1,14 @@
 import express, { Express, Request, Response, NextFunction } from "express";
+import { JWT_AUTHENTICATION_CONFIG } from "../../../config/env";
 import { AbstractController } from "../../../http/controllers/AbstractController";
 import { IHttpMiddlewareHandler } from "../../../http/middleware";
-import { HttpRequestModel, HttpRoute } from "../../../http/models";
+import { HttpRequestModel } from "../../../http/models";
 
-import { HttpServer } from "../../../http/server/HttpServer";
-import { JwtAccessTokenService } from "../../services";
+import { HttpServer, HttpServerProps } from "../../../http/server/HttpServer";
+import {
+  JwtAccessTokenService,
+  JwtAccessTokenServiceProps
+} from "../../services";
 import { ExpressAuthMiddlewareHandler } from "../middlewares";
 
 type ExpressMiddlewareHandlerType = IHttpMiddlewareHandler<
@@ -14,22 +18,38 @@ type ExpressMiddlewareHandlerType = IHttpMiddlewareHandler<
   any
 >;
 
-const jwtAccessTokenService = new JwtAccessTokenService();
+const jwtAccessTokenServiceProps: JwtAccessTokenServiceProps = {
+  expirationTimeInSeconds: JWT_AUTHENTICATION_CONFIG.EXPIRATION_TIME_IN_SECONDS,
+  secret: JWT_AUTHENTICATION_CONFIG.SECRET
+};
+
+const jwtAccessTokenService = new JwtAccessTokenService(
+  jwtAccessTokenServiceProps
+);
 const expressAuthMiddlewareHandler = new ExpressAuthMiddlewareHandler({
-  accessTokenService: jwtAccessTokenService,
+  accessTokenService: jwtAccessTokenService
 });
 
 export class ExpressHttpServer extends HttpServer {
   private server: Express;
 
-  constructor(port: number, routes: HttpRoute[]) {
-    super(port, routes);
+  constructor(props: HttpServerProps) {
+    super(props);
     this.server = express();
   }
 
-  run(): void {
+  async run() {
     this.logServerStarting();
     this.setupExpressServer();
+
+    try {
+      await this.tryRun();
+    } catch (error) {
+      this.catchRun(error);
+    }
+  }
+
+  private async tryRun() {
     this.server.listen(this.port, () => this.logServerStarted());
   }
 
@@ -77,7 +97,7 @@ export class ExpressHttpServer extends HttpServer {
     const httpRequest: HttpRequestModel = {
       params: request.params,
       query: request.params,
-      body: request.body,
+      body: request.body
     };
 
     const httpResponse = await controller.handle(httpRequest);

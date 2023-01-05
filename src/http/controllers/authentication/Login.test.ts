@@ -1,38 +1,38 @@
 import { UserRepositoryData } from "../../../data/repositories";
 import { YupLoginValidator } from "../../../infra/adapters";
-import { UserInMemoryRepository } from "../../../infra/repositories";
+import { UserInMemoryRepository } from "../../../infra/data/repositories";
 import {
   FakePasswordService,
-  FakeAccessTokenService,
+  FakeAccessTokenService
 } from "../../../infra/services";
 import {
   LoginUseCase,
-  LoginUseCaseProps,
+  LoginUseCaseProps
 } from "../../../usecases/authentication/Login";
 import { HttpErrorType, HttpStatus } from "../../enums";
 import { HttpExceptionHandlerResponse } from "../../exception-handler";
 import {
   LoginControllerOutput,
   LoginControllerProps,
-  LoginHttpRequest,
+  LoginHttpRequest
 } from "./contracts/Login";
 import { LoginController } from "./Login";
 
 const dataValidator = new YupLoginValidator();
 const userRepository = UserInMemoryRepository.getInstance();
 const passwordService = new FakePasswordService();
-const accessTokenGeneratorService = new FakeAccessTokenService();
+const accessTokenService = new FakeAccessTokenService();
 
 const loginUseCaseProps: LoginUseCaseProps = {
   dataValidator,
   passwordService,
   userRepository,
-  accessTokenGeneratorService,
+  accessTokenService
 };
 const loginUseCase = new LoginUseCase(loginUseCaseProps);
 
 const loginControllerProps: LoginControllerProps = {
-  loginUseCase,
+  loginUseCase
 };
 const loginController = new LoginController(loginControllerProps);
 
@@ -41,7 +41,7 @@ const validSignUpControllerBodyInput: UserRepositoryData = {
   name: "valid_name",
   email: "valid@email.com",
   password: "valid_password",
-  avatar: "valid_avatar",
+  avatar: "valid_avatar"
 };
 
 describe("Login Http Controller", () => {
@@ -56,16 +56,16 @@ describe("Login Http Controller", () => {
 
     await userRepository.create({
       ...validSignUpControllerBodyInput,
-      password: encodedPassword,
+      password: encodedPassword
     });
 
     const httpRequest: LoginHttpRequest = {
       body: {
         email: validSignUpControllerBodyInput.email,
-        password: validSignUpControllerBodyInput.password,
+        password: validSignUpControllerBodyInput.password
       },
       params: {},
-      query: {},
+      query: {}
     };
 
     const httpResponse = await loginController.handle(httpRequest);
@@ -80,10 +80,10 @@ describe("Login Http Controller", () => {
     const httpRequest: LoginHttpRequest = {
       body: {
         email: "",
-        password: "",
+        password: ""
       },
       params: {},
-      query: {},
+      query: {}
     };
 
     const httpResponse = await loginController.handle(httpRequest);
@@ -101,17 +101,17 @@ describe("Login Http Controller", () => {
       name: "valid_name",
       email: "email@email.com",
       password: "valid_password",
-      avatar: "valid_avatar",
+      avatar: "valid_avatar"
     };
     await userRepository.create(createdUser);
 
     const httpRequest: LoginHttpRequest = {
       body: {
         email: createdUser.email,
-        password: "any_wrong_password",
+        password: "any_wrong_password"
       },
       params: {},
-      query: {},
+      query: {}
     };
 
     const httpResponse = await loginController.handle(httpRequest);
@@ -127,10 +127,10 @@ describe("Login Http Controller", () => {
     const httpRequest: LoginHttpRequest = {
       body: {
         email: "not_existing@emai.com",
-        password: "any_password",
+        password: "any_password"
       },
       params: {},
-      query: {},
+      query: {}
     };
 
     const httpResponse = await loginController.handle(httpRequest);

@@ -4,20 +4,31 @@ import {
   Response,
   createServer,
   Next,
-  plugins,
+  plugins
 } from "restify";
+import { JWT_AUTHENTICATION_CONFIG } from "../../../config/env";
 import { AbstractController } from "../../../http/controllers/AbstractController";
 import { HttpMethod } from "../../../http/enums";
 import { INoNextHttpMiddlewareHandler } from "../../../http/middleware";
 import { HttpRequestModel, HttpRoute } from "../../../http/models";
 
-import { HttpServer } from "../../../http/server/HttpServer";
-import { JwtAccessTokenService } from "../../services";
+import { HttpServer, HttpServerProps } from "../../../http/server/HttpServer";
+import {
+  JwtAccessTokenService,
+  JwtAccessTokenServiceProps
+} from "../../services";
 import { RestifyAuthMiddlewareHandler } from "../middlewares/RestifyAuthMiddewareHandler";
 
-const jwtAccessTokenService = new JwtAccessTokenService();
+const jwtAccessTokenServiceProps: JwtAccessTokenServiceProps = {
+  expirationTimeInSeconds: JWT_AUTHENTICATION_CONFIG.EXPIRATION_TIME_IN_SECONDS,
+  secret: JWT_AUTHENTICATION_CONFIG.SECRET
+};
+
+const jwtAccessTokenService = new JwtAccessTokenService(
+  jwtAccessTokenServiceProps
+);
 const restifyAuthMiddlewareHandler = new RestifyAuthMiddlewareHandler({
-  accessTokenService: jwtAccessTokenService,
+  accessTokenService: jwtAccessTokenService
 });
 
 type RestifyMiddlewareHandlerType = INoNextHttpMiddlewareHandler<
@@ -29,15 +40,23 @@ type RestifyMiddlewareHandlerType = INoNextHttpMiddlewareHandler<
 export class RestifyHttpServer extends HttpServer {
   private server: Server;
 
-  constructor(port: number, routes: HttpRoute[]) {
-    super(port, routes);
+  constructor(props: HttpServerProps) {
+    super(props);
     this.server = createServer();
   }
 
-  run(): void {
+  async run() {
     this.logServerStarting();
     this.setupRestifyServer();
 
+    try {
+      await this.tryRun();
+    } catch (error) {
+      this.catchRun(error);
+    }
+  }
+
+  private async tryRun() {
     this.server.listen(this.port, () => this.logServerStarted());
   }
 
@@ -153,7 +172,7 @@ export class RestifyHttpServer extends HttpServer {
 
     return {
       middlewares,
-      completePath,
+      completePath
     };
   }
 
@@ -170,7 +189,7 @@ export class RestifyHttpServer extends HttpServer {
     const httpRequest: HttpRequestModel = {
       params: request.params,
       query: request.query,
-      body: requestBody,
+      body: requestBody
     };
 
     const httpResponse = await controller.handle(httpRequest);

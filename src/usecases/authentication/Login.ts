@@ -6,16 +6,16 @@ import { LoginDataValidation } from "../../infra/adapters";
 import {
   AccessTokenPayload,
   IAccessTokenService,
-  IPasswordService,
+  IPasswordService
 } from "../../services";
 import {
   LoginUseCaseInput,
   ILoginUseCase,
-  LoginUseCaseOutput,
+  LoginUseCaseOutput
 } from "./contracts/ILogin";
 
 export type LoginUseCaseProps = {
-  accessTokenGeneratorService: IAccessTokenService;
+  accessTokenService: IAccessTokenService;
   userRepository: IUserRepository;
   dataValidator: IDataValidator<LoginDataValidation>;
   passwordService: IPasswordService;
@@ -26,10 +26,10 @@ export class LoginUseCase implements ILoginUseCase {
   private dataValidator: IDataValidator<LoginDataValidation>;
 
   private passwordService: IPasswordService;
-  private accessTokenGeneratorService: IAccessTokenService;
+  private accessTokenService: IAccessTokenService;
 
   constructor(props: LoginUseCaseProps) {
-    this.accessTokenGeneratorService = props.accessTokenGeneratorService;
+    this.accessTokenService = props.accessTokenService;
     this.passwordService = props.passwordService;
 
     this.dataValidator = props.dataValidator;
@@ -40,7 +40,7 @@ export class LoginUseCase implements ILoginUseCase {
     const { email, password } = data;
     await this.dataValidator.validate({
       email,
-      password,
+      password
     });
 
     const foundUser = await this.userRepository.findByEmail(email);
@@ -61,17 +61,16 @@ export class LoginUseCase implements ILoginUseCase {
     }
 
     const tokenPayload: AccessTokenPayload = {
-      id: foundUser.id,
+      id: foundUser.id
     };
 
-    const accessToken =
-      await this.accessTokenGeneratorService.generateAccessToken(
-        foundUser.id,
-        tokenPayload
-      );
+    const accessToken = await this.accessTokenService.generateAccessToken(
+      foundUser.id,
+      tokenPayload
+    );
 
     const loginUserCaseOutput: LoginUseCaseOutput = {
-      accessToken,
+      accessToken
     };
 
     return loginUserCaseOutput;

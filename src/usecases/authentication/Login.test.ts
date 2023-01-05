@@ -1,4 +1,4 @@
-import { UserInMemoryRepository } from "../../infra/repositories";
+import { UserInMemoryRepository } from "../../infra/data/repositories";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import {
   InvalidDataException,
