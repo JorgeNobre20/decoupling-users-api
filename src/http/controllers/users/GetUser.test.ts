@@ -1,6 +1,6 @@
 import { UserRepositoryData } from "../../../data/repositories";
 import { UserMapper } from "../../../infra/data-mapper";
-import { UserInMemoryRepository } from "../../../infra/repositories";
+import { UserInMemoryRepository } from "../../../infra/data/repositories";
 
 import {
   GetUserUseCase,

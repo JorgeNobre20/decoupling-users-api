@@ -2,19 +2,19 @@ import { IGetUserUseCaseBuilder } from "../../../../builders/usecases/users";
 import { IGetUserUseCase } from "../../../../usecases/users/contracts";
 import {
   GetUserUseCase,
-  GetUserUseCaseProps,
+  GetUserUseCaseProps
 } from "../../../../usecases/users/GetUser";
 import { UserMapper } from "../../../data-mapper";
-import { UserInMemoryRepository } from "../../../data/repositories";
+import { KnexUserRepository } from "../../../data/repositories/KnexUserRepository";
 
-export class FakeGetUserUseCaseBuilder implements IGetUserUseCaseBuilder {
+export class GetUserUseCaseBuilder implements IGetUserUseCaseBuilder {
   build(): IGetUserUseCase {
-    const userRepository = UserInMemoryRepository.getInstance();
+    const userRepository = KnexUserRepository.getInstance();
     const userMapper = new UserMapper();
 
     const getUserUseCaseProps: GetUserUseCaseProps = {
       userRepository,
-      userMapper,
+      userMapper
     };
 
     const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);

@@ -1,14 +1,14 @@
 import {
   BusinessRuleException,
   InvalidDataException,
-  NotFoundException,
+  NotFoundException
 } from "../../domain/exceptions";
 import { FakeSignUpUseCaseBuilder } from "../../infra/builders/usecases/authentication";
 import {
   FakeGetUserUseCaseBuilder,
-  FakeUpdateUserUseCaseBuilder,
+  FakeUpdateUserUseCaseBuilder
 } from "../../infra/builders/usecases/users";
-import { UserInMemoryRepository } from "../../infra/repositories";
+import { UserInMemoryRepository } from "../../infra/data/repositories";
 import { getThrowedErrorType, NoErrorThrownError } from "../../tests";
 import { SignUpUseCaseInput } from "../authentication/contracts";
 import { UpdateUserUseCaseInput } from "./contracts";
@@ -17,14 +17,14 @@ const firstUserCreationData: SignUpUseCaseInput = {
   name: "any_name",
   email: "any_email@email.com",
   password: "any_password",
-  avatar: "any_avatar",
+  avatar: "any_avatar"
 };
 
 const secondUserCreationData: SignUpUseCaseInput = {
   name: "any_name_2",
   email: "any_email_2@email.com",
   password: "any_password_2",
-  avatar: "any_avatar_2",
+  avatar: "any_avatar_2"
 };
 
 const userRepository = UserInMemoryRepository.getInstance();
@@ -51,7 +51,7 @@ describe("Update User Use Case", () => {
       name: "updated_name",
       email: "updated@email.com",
       password: "updated_password",
-      avatar: "updated_avatar",
+      avatar: "updated_avatar"
     };
 
     const updatedUser = await updateUserUseCase.exec(updatedUserData);
@@ -69,7 +69,7 @@ describe("Update User Use Case", () => {
       name: "updated_name",
       email: "updated@email.com",
       password: "updated_password",
-      avatar: "updated_avatar",
+      avatar: "updated_avatar"
     };
 
     const error = await getThrowedErrorType(() =>
@@ -87,21 +87,18 @@ describe("Update User Use Case", () => {
     );
 
     const firstUserCreated = await getUserUseCase.exec({
-      id: firstCreatedUserId,
+      id: firstCreatedUserId
     });
     const secondUserCreated = await getUserUseCase.exec({
-      id: secondCreatedUserId,
+      id: secondCreatedUserId
     });
-
-    console.log(firstUserCreated);
-    console.log(secondUserCreated);
 
     const updatedUserData: UpdateUserUseCaseInput = {
       id: secondUserCreated.getId(),
       name: secondUserCreated.getName(),
       email: firstUserCreated.getEmail(),
       password: "update_password",
-      avatar: secondUserCreated.getAvatar(),
+      avatar: secondUserCreated.getAvatar()
     };
 
     const error = await getThrowedErrorType(() =>
@@ -120,7 +117,7 @@ describe("Update User Use Case", () => {
       name: "",
       email: "invalid_email",
       password: "",
-      avatar: "",
+      avatar: ""
     };
 
     const error = await getThrowedErrorType(() =>

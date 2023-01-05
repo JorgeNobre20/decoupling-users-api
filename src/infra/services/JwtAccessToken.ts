@@ -1,5 +1,4 @@
 import Jwt from "jsonwebtoken";
-import { JWT_AUTHENTICATION_CONFIG } from "../../config/env";
 import { UnauthorizedException } from "../../domain/exceptions";
 import { AccessTokenPayload, IAccessTokenService } from "../../services";
 
@@ -7,10 +6,19 @@ type JWT_PAYLOAD = {
   sub: string;
 };
 
+export type JwtAccessTokenServiceProps = {
+  secret: string;
+  expirationTimeInSeconds: number;
+};
+
 export class JwtAccessTokenService implements IAccessTokenService {
-  private readonly SECRET = JWT_AUTHENTICATION_CONFIG.SECRET;
-  private readonly EXPIRATION_TIME_IN_SECONDS =
-    JWT_AUTHENTICATION_CONFIG.EXPIRATION_TIME_IN_SECONDS;
+  private readonly SECRET;
+  private readonly EXPIRATION_TIME_IN_SECONDS;
+
+  constructor(props: JwtAccessTokenServiceProps) {
+    this.SECRET = props.secret;
+    this.EXPIRATION_TIME_IN_SECONDS = props.expirationTimeInSeconds;
+  }
 
   async generateAccessToken(id: string): Promise<string> {
     return Jwt.sign({}, this.SECRET, {

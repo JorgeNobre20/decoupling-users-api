@@ -1,7 +1,7 @@
 import { UserRepositoryData } from "../../../data/repositories";
 import { YupUserValidator } from "../../../infra/adapters";
 import { UserMapper } from "../../../infra/data-mapper";
-import { UserInMemoryRepository } from "../../../infra/repositories";
+import { UserInMemoryRepository } from "../../../infra/data/repositories";
 import {
   FakePasswordService,
   UserService,
