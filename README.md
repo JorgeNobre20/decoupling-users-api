@@ -1,3 +1,6 @@
+<div align="center">
+  <h2>API de Usuários com Autenticação JWT + Desacoplamento</h2>
+</div>
 
 <br/>
 <h3>💻 Descrição do Projeto: </h3>
@@ -12,7 +15,7 @@ Aplicação criada tentando aplicar da melhor forma possível os conceitos de de
   <li>Json Web Token</li>
   <li>UUID</li>
   <li>Knex</li>
-  <li>Postgres</li>=
+  <li>Postgres</li>
 </ul>
 
 <h3>🌟 Funcionalidades: </h3>
