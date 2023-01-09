@@ -31,7 +31,7 @@ export class GetUserController extends AbstractController<
   protected async tryHandle(
     httpRequest: GetUserHttpRequest
   ): Promise<HttpResponseModel<GetUserControllerOutput>> {
-    const userId = httpRequest.params.id;
+    const userId = httpRequest.params.userId;
 
     const getUserUseCaseInput: GetUserUseCaseInput = {
       id: userId,

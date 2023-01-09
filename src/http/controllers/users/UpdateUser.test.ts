@@ -1,6 +1,7 @@
 import { UserRepositoryData } from "../../../data/repositories";
-import { UserMapper, YupUserValidator } from "../../../infra/adapters";
-import { UserInMemoryRepository } from "../../../infra/repositories";
+import { YupUserValidator } from "../../../infra/adapters";
+import { UserMapper } from "../../../infra/data-mapper";
+import { UserInMemoryRepository } from "../../../infra/data/repositories";
 import { UserService } from "../../../infra/services";
 import {
   GetUserUseCase,
@@ -27,6 +28,7 @@ const userService = new UserService({ userRepository });
 
 const getUserUseCaseProps: GetUserUseCaseProps = {
   userRepository,
+  userMapper,
 };
 const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
 
@@ -79,7 +81,7 @@ describe("Update User Http Controller", () => {
     const httpRequest: UpdateUserHttpRequest = {
       body: updatedData,
       params: {
-        id: firstUserCreationData.id,
+        userId: firstUserCreationData.id,
       },
       query: {},
     };
@@ -105,7 +107,7 @@ describe("Update User Http Controller", () => {
         avatar: "",
       },
       params: {
-        id: firstUserCreationData.id,
+        userId: firstUserCreationData.id,
       },
       query: {},
     };
@@ -129,7 +131,7 @@ describe("Update User Http Controller", () => {
         avatar: "updated_avatar",
       },
       params: {
-        id: "not_existing_id",
+        userId: "not_existing_id",
       },
       query: {},
     };
@@ -155,7 +157,7 @@ describe("Update User Http Controller", () => {
         avatar: "updated_avatar",
       },
       params: {
-        id: firstUserCreationData.id,
+        userId: firstUserCreationData.id,
       },
       query: {},
     };

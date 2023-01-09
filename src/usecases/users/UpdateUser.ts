@@ -1,4 +1,5 @@
-import { IDataValidator, IUserMapper } from "../../adpaters";
+import { IDataValidator } from "../../adpaters";
+import { IUserMapper } from "../../data-mapper";
 import { IUserRepository, UserRepositoryData } from "../../data/repositories";
 import { UserDataValidation } from "../../infra/adapters";
 import { IUserService } from "../../services";

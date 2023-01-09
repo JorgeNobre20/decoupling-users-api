@@ -1,5 +1,6 @@
 import { UserRepositoryData } from "../../../data/repositories";
-import { UserInMemoryRepository } from "../../../infra/repositories";
+import { UserMapper } from "../../../infra/data-mapper";
+import { UserInMemoryRepository } from "../../../infra/data/repositories";
 import {
   DeleteUserUseCase,
   DeleteUserUseCaseProps,
@@ -18,9 +19,11 @@ import {
 import { DeleteUserController } from "./DeleteUser";
 
 const userRepository = UserInMemoryRepository.getInstance();
+const userMapper = new UserMapper();
 
 const getUserUseCaseProps: GetUserUseCaseProps = {
   userRepository,
+  userMapper,
 };
 const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
 
@@ -56,7 +59,7 @@ describe("Delete User Http Controller", () => {
     const httpRequest: DeleteUserHttpRequest = {
       body: {},
       params: {
-        id: createdUser.id,
+        userId: createdUser.id,
       },
       query: {},
     };
@@ -73,7 +76,7 @@ describe("Delete User Http Controller", () => {
     const httpRequest: DeleteUserHttpRequest = {
       body: {},
       params: {
-        id: "not_existing_id",
+        userId: "not_existing_id",
       },
       query: {},
     };

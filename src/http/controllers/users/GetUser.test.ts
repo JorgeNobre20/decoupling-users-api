@@ -1,5 +1,6 @@
 import { UserRepositoryData } from "../../../data/repositories";
-import { UserInMemoryRepository } from "../../../infra/repositories";
+import { UserMapper } from "../../../infra/data-mapper";
+import { UserInMemoryRepository } from "../../../infra/data/repositories";
 
 import {
   GetUserUseCase,
@@ -15,9 +16,11 @@ import {
 import { GetUserController } from "./GetUser";
 
 const userRepository = UserInMemoryRepository.getInstance();
+const userMapper = new UserMapper();
 
 const getUserUseCaseProps: GetUserUseCaseProps = {
   userRepository,
+  userMapper,
 };
 const getUserUseCase = new GetUserUseCase(getUserUseCaseProps);
 
@@ -44,7 +47,7 @@ describe("Get User Http Controller", () => {
     const httpRequest: GetUserHttpRequest = {
       body: {},
       params: {
-        id: createdUserData.id,
+        userId: createdUserData.id,
       },
       query: {},
     };
@@ -64,7 +67,7 @@ describe("Get User Http Controller", () => {
     const httpRequest: GetUserHttpRequest = {
       body: {},
       params: {
-        id: "not_existing_id",
+        userId: "not_existing_id",
       },
       query: {},
     };

@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from "../../domain/exceptions";
 import { HttpErrorType, HttpStatus } from "../enums";
+import { BadRequestException } from "../exceptions";
 import { HttpResponseModel } from "../models";
 
 export type HttpExceptionHandlerResponse = {
@@ -16,6 +17,10 @@ export class HttpExceptionHandler {
   static mapErrorToHttpResponseModel(
     error: Error
   ): HttpResponseModel<HttpExceptionHandlerResponse> {
+    if (error instanceof BadRequestException) {
+      return this.mapBadRequestException(error);
+    }
+
     if (error instanceof BusinessRuleException) {
       return this.mapBusinessRuleException(error);
     }
@@ -85,6 +90,20 @@ export class HttpExceptionHandler {
         message: parsedError.message,
         errorType: HttpErrorType.INTERNAL_SERVER_ERROR,
         data: parsedError,
+      },
+    };
+  }
+
+  private static mapBadRequestException(
+    error: Error
+  ): HttpResponseModel<HttpExceptionHandlerResponse> {
+    const parsedError = error as BadRequestException;
+
+    return {
+      statusCode: HttpStatus.BAD_REQUEST,
+      body: {
+        message: parsedError.message,
+        errorType: HttpErrorType.BAD_REQUEST,
       },
     };
   }

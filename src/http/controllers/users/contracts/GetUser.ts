@@ -1,10 +1,11 @@
 import { IGetUserUseCase } from "../../../../usecases/users/contracts";
 import { HttpRequestModel } from "../../../models";
+import { AbstractController } from "../../AbstractController";
 
 export type GetUserControllerBodyInput = {};
 
 export type GetUserControllerRouteParamsInput = {
-  id: string;
+  userId: string;
 };
 
 export type GetUserControllerQueryParamsInput = {};
@@ -25,3 +26,10 @@ export type GetUserControllerOutput = {
   email: string;
   avatar: string;
 };
+
+export type GetUserControllerType = AbstractController<
+  GetUserControllerBodyInput,
+  GetUserControllerRouteParamsInput,
+  GetUserControllerQueryParamsInput,
+  GetUserControllerOutput
+>;
